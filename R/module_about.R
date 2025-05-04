@@ -55,7 +55,7 @@ aboutServer <- function(id) {
     overview_table <- shiny::reactive({
       # Try to create the summary table, catching any errors
       tryCatch({
-        table_obj <- spectr::table_overview()
+        table_obj <- table_overview()
         return(list(success = TRUE, table = table_obj))
       }, error = function(e) {
         # Return error message in a user-friendly format

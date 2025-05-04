@@ -61,7 +61,7 @@ typeMatrixServer <- function(id, dataset) {
 
       # Try to create the plot, catching any errors
       tryCatch({
-        plot_obj <- spectr::plot_TypeMatrixWeb(ds_value)
+        plot_obj <- plot_TypeMatrixWeb(ds_value)
         return(list(success = TRUE, plot = plot_obj))
       }, error = function(e) {
         # Return error message in a user-friendly format

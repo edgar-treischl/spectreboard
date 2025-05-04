@@ -52,7 +52,7 @@ summaryServer <- function(id, dataset) {
 
       # Try to create the summary table, catching any errors
       tryCatch({
-        table_obj <- spectr::table_pointer(ds_value)
+        table_obj <- table_pointer(ds_value)
         return(list(success = TRUE, table = table_obj))
       }, error = function(e) {
         # Return error message in a user-friendly format

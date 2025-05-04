@@ -59,7 +59,7 @@ labelMatrixServer <- function(id, dataset) {
 
       # Try to create the plot, catching any errors
       tryCatch({
-        plot_obj <- spectr::plot_LabelMatrix(table = ds_value)
+        plot_obj <- plot_LabelMatrix(table = ds_value)
         return(list(success = TRUE, plot = plot_obj))
       }, error = function(e) {
         # Return error message in a user-friendly format

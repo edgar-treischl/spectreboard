@@ -72,7 +72,7 @@ presenceMatrixServer <- function(id, dataset) {
       # Try to create the plot, catching any errors
       tryCatch({
         skip_value <- input$skip
-        plot_obj <- spectr::plot_PresenceMatrixWeb(ds_value, skip_value)
+        plot_obj <- plot_PresenceMatrixWeb(ds_value, skip_value)
         return(list(success = TRUE, plot = plot_obj))
       }, error = function(e) {
         # Return error message in a user-friendly format
