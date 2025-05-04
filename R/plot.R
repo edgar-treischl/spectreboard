@@ -27,7 +27,7 @@ plot_PresenceMatrix <- function(table,
     column_name = all_columns
   )
 
-  meta <- read_all_pointers(table)$pointers
+  meta <- spectr::read_all_pointers(table)$pointers
 
   latest_version <- meta |>
     dplyr::arrange(dplyr::desc(version)) |>
@@ -172,7 +172,7 @@ plot_PresenceMatrixWeb <- function(table,
     column_name = all_columns
   )
 
-  meta <- read_all_pointers(table)$pointers
+  meta <- spectr::read_all_pointers(table)$pointers
 
   latest_version <- meta |>
     dplyr::arrange(dplyr::desc(version)) |>
