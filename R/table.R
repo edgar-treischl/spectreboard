@@ -77,7 +77,26 @@ table_pointer <- function(pointer_name) {
 #'
 table_overview <- function() {
 
-  glcon <- AmtSchulGit::gitlab_connect()
+  #glcon <- AmtSchulGit::gitlab_connect()
+  userkeys <- keyring::key_list("gitlab_api")
+  user <- userkeys$username
+
+  glcon <- tryCatch({
+    gitlabr::set_gitlab_connection(
+      gitlab_url = "https://gitlab.lrz.de",
+      private_token = keyring::key_get(service = "gitlab_api", username = user)
+    )
+  },
+  warning = function(w) {
+    rlang::warn(message = w$message, class = "gitlab_warning")
+  },
+  error = function(e) {
+    rlang::abort(message = e$message, class = "gitlab_error")
+  })
+
+  if (rlang::is_null(glcon)) {
+    cli::cli_abort("Can't connect to GitLab.")
+  }
 
   # Push file content directly to GitLab
   result <- gitlabr::gl_get_file(
