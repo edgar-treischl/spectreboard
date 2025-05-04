@@ -6,6 +6,11 @@
 \usage{
 summaryServer(id, dataset)
 }
+\arguments{
+\item{id}{ID for the module}
+
+\item{dataset}{Reactive expression that returns the dataset to be summarized}
+}
 \description{
 Server Module for Summary panel
 }

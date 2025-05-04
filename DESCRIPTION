@@ -8,3 +8,13 @@ License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports: 
+    bsicons,
+    bslib,
+    dplyr,
+    ggplot2,
+    gt,
+    palmerpenguins,
+    rlang,
+    shiny,
+    shinycssloaders

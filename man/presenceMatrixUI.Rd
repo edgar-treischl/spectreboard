@@ -6,6 +6,9 @@
 \usage{
 presenceMatrixUI(id)
 }
+\arguments{
+\item{id}{ID for the module}
+}
 \description{
 UI Module for Presence Matrix panel
 }

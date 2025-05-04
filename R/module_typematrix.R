@@ -1,5 +1,6 @@
 #' UI Module for Type Matrix panel
 #'
+#' @param id ID for the module
 #' @export
 #
 
@@ -33,6 +34,9 @@ typeMatrixUI <- function(id) {
 
 
 #' Server Module for Type Matrix panel
+#'
+#' @param id ID for the module
+#' @param dataset Reactive expression that returns the selected dataset
 #'
 #' @export
 #

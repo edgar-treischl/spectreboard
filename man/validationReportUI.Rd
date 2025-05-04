@@ -6,6 +6,9 @@
 \usage{
 validationReportUI(id)
 }
+\arguments{
+\item{id}{ID for the module}
+}
 \description{
 UI Module for Validation Report
 }

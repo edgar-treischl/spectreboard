@@ -6,6 +6,9 @@
 \usage{
 aboutServer(id)
 }
+\arguments{
+\item{id}{The namespace ID for the module.}
+}
 \description{
 Server Module for About panel
 }

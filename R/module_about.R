@@ -2,6 +2,7 @@
 #' UI Module for About panel
 #'
 #' This function initializes and runs the Shiny application.
+#' @param id The namespace ID for the module.
 #'
 #' @export
 #
@@ -43,6 +44,7 @@ aboutUI <- function(id) {
 
 #' Server Module for About panel
 #'
+#' @param id The namespace ID for the module.
 #' @export
 #
 
@@ -74,8 +76,8 @@ aboutServer <- function(id) {
         result$table
       } else {
         # If there was an error, create a simple gt table with the error message
-        gt::gt(data.frame(Error = result$error)) %>%
-          gt::fmt_markdown(columns = gt::everything()) %>%
+        gt::gt(data.frame(Error = result$error)) |>
+          gt::fmt_markdown(columns = gt::everything()) |>
           gt::tab_options(table.font.color = "red")
       }
     })
@@ -142,8 +144,8 @@ aboutServer <- function(id) {
 #         result$table
 #       } else {
 #         # If there was an error, create a simple gt table with the error message
-#         gt::gt(data.frame(Error = result$error)) %>%
-#           gt::fmt_markdown(columns = gt::everything()) %>%
+#         gt::gt(data.frame(Error = result$error)) |>
+#           gt::fmt_markdown(columns = gt::everything()) |>
 #           gt::tab_options(table.font.color = "red")
 #       }
 #     })

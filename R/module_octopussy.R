@@ -1,5 +1,6 @@
 #' UI Module for Validation Report
 #'
+#' @param id ID for the module
 #' @export
 #
 
@@ -41,6 +42,8 @@ validationReportUI <- function(id) {
 
 #' Server Module for Validation Report panel
 #'
+#' @param id ID for the module
+#' @param dataset Reactive expression that returns the selected dataset
 #' @export
 #
 validationReportServer <- function(id, dataset) {

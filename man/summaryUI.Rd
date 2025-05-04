@@ -6,6 +6,9 @@
 \usage{
 summaryUI(id)
 }
+\arguments{
+\item{id}{ID for the module}
+}
 \description{
 UI Module for Summary panel
 }

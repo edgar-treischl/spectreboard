@@ -6,6 +6,9 @@
 \usage{
 typeMatrixUI(id)
 }
+\arguments{
+\item{id}{ID for the module}
+}
 \description{
 UI Module for Type Matrix panel
 }

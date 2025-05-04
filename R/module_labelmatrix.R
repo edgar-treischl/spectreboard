@@ -1,5 +1,6 @@
 #' UI Module for labelMatrix
 #'
+#' @param id The namespace ID for the module.
 #' @export
 #
 
@@ -33,6 +34,8 @@ labelMatrixUI <- function(id) {
 
 #' Server Module for Type Matrix panel
 #'
+#' @param id The namespace ID for the module.
+#' @param dataset A reactive expression that returns the selected dataset.
 #' @export
 #
 

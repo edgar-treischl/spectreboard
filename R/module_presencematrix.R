@@ -1,5 +1,6 @@
 #' UI Module for Presence Matrix panel
 #'
+#' @param id ID for the module
 #' @export
 #
 
@@ -51,6 +52,8 @@ presenceMatrixUI <- function(id) {
 
 #' Server Module for Presence Matrix panel
 #'
+#' @param id ID for the module
+#' @param dataset Reactive expression that returns the dataset to be visualized
 #' @export
 #
 presenceMatrixServer <- function(id, dataset) {

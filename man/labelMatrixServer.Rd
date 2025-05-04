@@ -6,6 +6,11 @@
 \usage{
 labelMatrixServer(id, dataset)
 }
+\arguments{
+\item{id}{The namespace ID for the module.}
+
+\item{dataset}{A reactive expression that returns the selected dataset.}
+}
 \description{
 Server Module for Type Matrix panel
 }

@@ -6,6 +6,9 @@
 \usage{
 aboutUI(id)
 }
+\arguments{
+\item{id}{The namespace ID for the module.}
+}
 \description{
 This function initializes and runs the Shiny application.
 }

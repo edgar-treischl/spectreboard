@@ -1,5 +1,7 @@
 #' UI Module for Summary panel
 #'
+#' @param id ID for the module
+#'
 #' @export
 #
 summaryUI <- function(id) {
@@ -30,6 +32,8 @@ summaryUI <- function(id) {
 
 #' Server Module for Summary panel
 #'
+#' @param id ID for the module
+#' @param dataset Reactive expression that returns the dataset to be summarized
 #' @export
 #
 

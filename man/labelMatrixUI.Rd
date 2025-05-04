@@ -6,6 +6,9 @@
 \usage{
 labelMatrixUI(id)
 }
+\arguments{
+\item{id}{The namespace ID for the module.}
+}
 \description{
 UI Module for labelMatrix
 }

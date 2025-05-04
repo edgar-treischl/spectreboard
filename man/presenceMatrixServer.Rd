@@ -6,6 +6,11 @@
 \usage{
 presenceMatrixServer(id, dataset)
 }
+\arguments{
+\item{id}{ID for the module}
+
+\item{dataset}{Reactive expression that returns the dataset to be visualized}
+}
 \description{
 Server Module for Presence Matrix panel
 }
