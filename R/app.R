@@ -1,29 +1,44 @@
-# library(spectr)
-# library(shiny)
-# library(bslib)
-# library(dplyr)
-# library(ggplot2)
-# library(gt)
-# library(tidyr)
+#' Preload overview table data
+#'
+#' This function loads the overview table data before the app UI is rendered,
+#' improving initial load time for users.
+#'
+#' @return A list with success indicator and either the table or error message
+#' @keywords internal
 
+preload_overview_data <- function() {
+  message("Preloading overview table data...")
+  tryCatch({
+    # Start timing
+    start_time <- Sys.time()
 
-# Source all modules
-# source("R/module_about.R")
-# source("R/module_summary.R")
-# source("R/module_octopussy.R")
-# source("R/module_presencematrix.R")
-# source("R/module_typematrix.R")
-# source("R/module_labelmatrix.R")
+    # Get the data
+    table_obj <- table_overview()
 
+    # Pre-render the gt table to HTML
+    # This moves the rendering work before the app starts
+    rendered_html <- gt::as_raw_html(table_obj)
 
-# Set up image path
+    message("Data loading completed in ", round(difftime(Sys.time(), start_time, units = "secs"), 2), " seconds")
 
-
-
+    list(
+      success = TRUE,
+      table = table_obj,
+      html = rendered_html
+    )
+  }, error = function(e) {
+    warning("Failed to preload overview table data: ", conditionMessage(e))
+    list(
+      success = FALSE,
+      error = paste0("Unable to generate summary table: ",
+                     "<br>Technical details: ", conditionMessage(e)),
+      html = NULL
+    )
+  })
+}
 
 #' Modern UI function for the application
 #' @export
-
 app_ui <- function() {
   bslib::page_navbar(
     title = shiny::span(
@@ -106,16 +121,26 @@ app_ui <- function() {
 #' @param input Input objects
 #' @param output Output objects
 #' @param session Session object
+#' @param preloaded_data Preloaded overview table data
 #' @export
-
-app_server <- function(input, output, session) {
+app_server <- function(input, output, session, preloaded_data = NULL) {
   # Reactive value for the selected dataset
   selected_dataset <- shiny::reactive({
     input$dataset
   })
 
+  # Create reactive for overview table data
+  overview_table_data <- shiny::reactive({
+    preloaded_data
+  })
+
+  # Show notification that data is ready
+  if (!is.null(preloaded_data) && preloaded_data$success) {
+    shiny::showNotification("Data already loaded and ready to use", type = "message")
+  }
+
   # Initialize all module servers
-  aboutServer("about")
+  aboutServer("about", overview_table_data = overview_table_data)
   summaryServer("summary", selected_dataset)
   validationReportServer("validation", selected_dataset)
   presenceMatrixServer("presence", selected_dataset)
@@ -123,17 +148,26 @@ app_server <- function(input, output, session) {
   labelMatrixServer("label", selected_dataset)
 }
 
-# Run the app
-
 #' Run the Shiny application
 #'
 #' This function initializes and runs the Shiny application.
 #'
 #' @export
 run_app <- function() {
+  # Preload data before starting the app
+  preloaded_data <- preload_overview_data()
+
+  # Add resource path for images
   shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
-  shiny::shinyApp(ui = app_ui(), server = app_server)
+
+  # Create UI
+  ui <- app_ui()
+
+  # Create server function with preloaded data
+  server <- function(input, output, session) {
+    app_server(input, output, session, preloaded_data = preloaded_data)
+  }
+
+  # Launch the app
+  shiny::shinyApp(ui = ui, server = server)
 }
-
-#shiny::shinyApp(ui, server)
-

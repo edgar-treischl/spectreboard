@@ -22,9 +22,11 @@ aboutUI <- function(id) {
         shiny::p("The results are stored as versioned metadata pointers (in YAML format) in the oddjob GitLab repository. Validation pipelines, reports, and pointer data create a rich meta data for a complete audit trail."),
         shiny::p("This app retrieves the data from oddjob and visualizes it. The following validation results are found:"),
         shiny::hr(),
-        # Add spinner only to the gt_output
+        # Add spinner only to the output
         shinycssloaders::withSpinner(
-          gt::gt_output(ns("overview_table")),
+          # Use uiOutput instead of gt_output to support both pre-rendered HTML
+          # and dynamically rendered gt tables
+          shiny::uiOutput(ns("overview_table")),
           type = 1,  # Choose spinner type (1-8)
           color = "#6c757d"
         ),
@@ -48,41 +50,51 @@ aboutUI <- function(id) {
 #' @export
 #
 
-aboutServer <- function(id) {
+aboutServer <- function(id, overview_table_data = NULL) {
   shiny::moduleServer(id, function(input, output, session) {
-
-    # Create reactive for table with error handling
-    overview_table <- shiny::reactive({
-      # Try to create the summary table, catching any errors
-      tryCatch({
-        table_obj <- table_overview()
-        return(list(success = TRUE, table = table_obj))
-      }, error = function(e) {
-        # Return error message in a user-friendly format
-        return(list(
-          success = FALSE,
-          error = paste0("Unable to generate summary table: ",
-                         "<br>Technical details: ", conditionMessage(e))
-        ))
+    # If overview_table_data was not provided, create it locally
+    local_overview_table_data <- if (is.null(overview_table_data)) {
+      shiny::reactive({
+        tryCatch({
+          table_obj <- table_overview()
+          return(list(success = TRUE, table = table_obj))
+        }, error = function(e) {
+          return(list(
+            success = FALSE,
+            error = paste0("Unable to generate summary table: ",
+                           "<br>Technical details: ", conditionMessage(e))
+          ))
+        })
       })
-    })
+    } else {
+      overview_table_data
+    }
 
-    # Connect reactive to output with error handling
-    output$overview_table <- gt::render_gt({
-      result <- overview_table()
+    # Immediately output pre-rendered HTML if available
+    observe({
+      data <- local_overview_table_data()
 
-      if (result$success) {
-        # If successful, return the table
-        result$table
+      if (data$success && !is.null(data$html)) {
+        # Use the pre-rendered HTML
+        output$overview_table <- renderUI({
+          HTML(data$html)
+        })
       } else {
-        # If there was an error, create a simple gt table with the error message
-        gt::gt(data.frame(Error = result$error)) |>
-          gt::fmt_markdown(columns = gt::everything()) |>
-          gt::tab_options(table.font.color = "red")
+        # Use the regular gt_output/render_gt approach as backup
+        output$overview_table <- gt::render_gt({
+          if (data$success) {
+            data$table
+          } else {
+            gt::gt(data.frame(Error = data$error)) |>
+              gt::fmt_markdown(columns = gt::everything()) |>
+              gt::tab_options(table.font.color = "red")
+          }
+        })
       }
     })
   })
 }
+
 
 # # UI Module for About panel
 # aboutUI <- function(id) {
