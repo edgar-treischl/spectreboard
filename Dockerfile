@@ -9,11 +9,12 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev
 
 # Copy the 'spectr' package tarball into the container
-COPY ./spectr_0.0.0.1.tar.gz /srv/shiny-server/
+# COPY ./spectr_0.0.0.1.tar.gz /srv/shiny-server/
+COPY ./spectreboard_0.0.0.1.tar.gz /tmp/
 
 # Install the 'spectr' package from the tarball
 RUN R -e "install.packages('devtools')"
-RUN R -e "devtools::install_local('/srv/shiny-server/spectr_0.0.0.1.tar.gz')"
+RUN R -e "devtools::install_local('/tmp/spectreboard_0.0.0.1.tar.gz')"
 
 
 # Install R packages
@@ -22,14 +23,15 @@ RUN R -e "install.packages('pak', repos='https://cloud.r-project.org/'); \
 
 
 # Create a directory for your specific app
-RUN mkdir -p /srv/shiny-server/spectre/
+# RUN mkdir -p /srv/shiny-server/spectre/
+
 # RUN mkdir -p /srv/shiny-server/myapp/www/
 # RUN mkdir -p /srv/shiny-server/myapp/data/
 
 # Copy your application files into the app directory
-COPY R/ /srv/shiny-server/spectre/
-COPY pointers/ /srv/shiny-server/spectre/pointers/
-COPY validation/ /srv/shiny-server/spectre/validation/
+# COPY R/ /srv/shiny-server/spectre/
+# COPY pointers/ /srv/shiny-server/spectre/pointers/
+# COPY validation/ /srv/shiny-server/spectre/validation/
 
 
 # Set proper permissions for the shiny to run the app
@@ -39,10 +41,11 @@ COPY validation/ /srv/shiny-server/spectre/validation/
 #USER shiny
 
 # Make all app files readable by the shiny user
-RUN chmod -R 755 /srv/shiny-server/
+# RUN chmod -R 755 /srv/shiny-server/
 
 # Expose port 3838 (default for Shiny Server)
 EXPOSE 3838
 
 # Run App
-CMD ["/usr/bin/shiny-server"]
+# CMD ["/usr/bin/shiny-server"]
+CMD ["R", "-e", "spectreboard::run_app()"]
