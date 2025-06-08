@@ -7,13 +7,13 @@
 #'
 call_oddjob <- function(table = NULL) {
   #glcon <- AmtSchulGit::gitlab_connect()
-  userkeys <- keyring::key_list("gitlab_api")
-  user <- userkeys$username
+  #userkeys <- keyring::key_list("gitlab_api")
+  #user <- userkeys$username
 
   glcon <- tryCatch({
     gitlabr::set_gitlab_connection(
       gitlab_url = "https://gitlab.lrz.de",
-      private_token = keyring::key_get(service = "gitlab_api", username = user)
+      private_token = Sys.getenv("GITLAB_API_TOKEN") #keyring::key_get(service = "gitlab_api", username = user)
     )
   },
   warning = function(w) {
