@@ -13,7 +13,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-
 # Install Shiny
 RUN install2.r --error shiny
 
