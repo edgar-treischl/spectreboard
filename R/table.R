@@ -82,36 +82,39 @@ table_overview <- function() {
   #userkeys <- keyring::key_list("gitlab_api")
   #user <- userkeys$username
 
-  glcon <- tryCatch({
-    gitlabr::set_gitlab_connection(
-      gitlab_url = "https://gitlab.lrz.de",
-      private_token = Sys.getenv("GITLAB_API_TOKEN")  # keyring::key_get(service = "gitlab_api", username = user)
-    )
-  },
-  warning = function(w) {
-    rlang::warn(message = w$message, class = "gitlab_warning")
-  },
-  error = function(e) {
-    rlang::abort(message = e$message, class = "gitlab_error")
-  })
+  # glcon <- tryCatch({
+  #   gitlabr::set_gitlab_connection(
+  #     gitlab_url = "https://gitlab.lrz.de",
+  #     private_token = Sys.getenv("GITLAB_API_TOKEN")  # keyring::key_get(service = "gitlab_api", username = user)
+  #   )
+  # },
+  # warning = function(w) {
+  #   rlang::warn(message = w$message, class = "gitlab_warning")
+  # },
+  # error = function(e) {
+  #   rlang::abort(message = e$message, class = "gitlab_error")
+  # })
+  #
+  # if (rlang::is_null(glcon)) {
+  #   cli::cli_abort("Can't connect to GitLab.")
+  # }
+  #
+  # # Push file content directly to GitLab
+  # result <- gitlabr::gl_get_file(
+  #   project = "216273",
+  #   file_path = "global_index.yml",
+  # )
+  #
+  # # Disconnect from GitLab
+  # gitlabr::unset_gitlab_connection()
+  #
+  #
+  # df <- yaml::yaml.load(result)
+  #
+  # df <- do.call(rbind, df) |> as.data.frame()
 
-  if (rlang::is_null(glcon)) {
-    cli::cli_abort("Can't connect to GitLab.")
-  }
+  df <- duckdb_table(table = "global_data")
 
-  # Push file content directly to GitLab
-  result <- gitlabr::gl_get_file(
-    project = "216273",
-    file_path = "global_index.yml",
-  )
-
-  # Disconnect from GitLab
-  gitlabr::unset_gitlab_connection()
-
-
-  df <- yaml::yaml.load(result)
-
-  df <- do.call(rbind, df) |> as.data.frame()
   df$version <- sapply(df$version, as.character)
 
   df$version <- lubridate::ymd_hms(df$version)

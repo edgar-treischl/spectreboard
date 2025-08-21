@@ -1,3 +1,26 @@
+#' Get a DuckDB table
+#'
+#' @param table Table name
+#'
+#' @returns A data frame containing the requested table.
+#' @export
+#'
+duckdb_table <- function(table = c("pointers", "columns", "global_data")) {
+  rlang::arg_match(table)
+  db_path <- here::here("meta.duckdb")
+  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
+
+  data <- DBI::dbReadTable(con, table)
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+  return(data)
+
+}
+
+
+
+
+
+
 # library(fs)
 #
 # cache_dir <- "cache"

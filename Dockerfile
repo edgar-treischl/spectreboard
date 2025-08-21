@@ -27,28 +27,28 @@ CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
 
 # Mine for last try
 # Use the official R Shiny image
-FROM rocker/shiny:latest
+#FROM rocker/shiny:latest
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libxml2-dev
+#RUN apt-get update && apt-get install -y \
+    #libcurl4-openssl-dev \
+    #libssl-dev \
+    #libxml2-dev
 
 # Copy the 'spectr' package tarball into the container
-# COPY ./spectr_0.0.0.1.tar.gz /srv/shiny-server/
-COPY ./spectreboard_0.0.0.1.tar.gz /tmp/
+#COPY ./spectreboard_0.0.0.1.tar.gz /tmp/
 
 # Install the 'spectr' package from the tarball
-RUN R -e "install.packages('devtools')"
-RUN R -e "devtools::install_local('/tmp/spectreboard_0.0.0.1.tar.gz')"
+#RUN R -e "install.packages('devtools')"
+#RUN R -e "devtools::install_local('/tmp/spectreboard_0.0.0.1.tar.gz')"
 
 
 # Install R packages
-RUN R -e "install.packages('pak', repos='https://cloud.r-project.org/'); \
-          pak::pkg_install(c('shiny', 'bslib', 'dplyr', 'ggplot2', 'gt', 'tidyr', 'sysfonts', 'devtools', 'shinycssloaders', 'emoji', 'showtext'));"
+#RUN R -e "install.packages('pak', repos='https://cloud.r-project.org/'); \
+          #pak::pkg_install(c('shiny', 'bslib', 'dplyr', 'ggplot2', 'gt', 'tidyr', 'sysfonts', 'devtools', 'shinycssloaders', 'emoji', 'showtext'));"
 
 
+#OLD Comments
 # Create a directory for your specific app
 # RUN mkdir -p /srv/shiny-server/spectre/
 
@@ -71,8 +71,10 @@ RUN R -e "install.packages('pak', repos='https://cloud.r-project.org/'); \
 # RUN chmod -R 755 /srv/shiny-server/
 
 # Expose port 3838 (default for Shiny Server)
-EXPOSE 3838
+
+#EXPOSE 3838
 
 # Run App
 # CMD ["/usr/bin/shiny-server"]
-CMD ["R", "-e", "spectreboard::run_app()"]
+
+#CMD ["R", "-e", "spectreboard::run_app()"]

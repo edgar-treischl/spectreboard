@@ -4,7 +4,7 @@
 \alias{app_server}
 \title{Main server function for the application}
 \usage{
-app_server(input, output, session)
+app_server(input, output, session, preloaded_data = NULL)
 }
 \arguments{
 \item{input}{Input objects}
@@ -12,6 +12,8 @@ app_server(input, output, session)
 \item{output}{Output objects}
 
 \item{session}{Session object}
+
+\item{preloaded_data}{Preloaded overview table data}
 }
 \description{
 Main server function for the application

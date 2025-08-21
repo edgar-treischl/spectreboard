@@ -4,7 +4,7 @@
 \alias{aboutServer}
 \title{Server Module for About panel}
 \usage{
-aboutServer(id)
+aboutServer(id, overview_table_data = NULL)
 }
 \arguments{
 \item{id}{The namespace ID for the module.}

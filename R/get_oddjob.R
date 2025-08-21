@@ -49,7 +49,6 @@ call_oddjob <- function(table = NULL) {
 #' @returns List with meta data.
 #' @export
 #'
-#' @examples
 get_oddjob <- function(table_name = NULL) {
 
   received_table <- call_oddjob(table = table_name)
