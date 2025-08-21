@@ -1,17 +1,18 @@
 # Use a base R image with Shiny pre-installed
-FROM rocker/r-ver:latest
+FROM rocker/r-ver:4.4
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libxml2-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libxt-dev \
-    pandoc \
-    pandoc-citeproc \
-    && apt-get clean
+RUN apt-get update && \
+    apt-get install -y \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        libxml2-dev && \
+        libpng-dev \
+        libjpeg-dev \
+        libxt-dev \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # Install Shiny
 RUN install2.r --error shiny
