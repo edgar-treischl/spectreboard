@@ -459,9 +459,10 @@ plot_LabelMatrix <- function(table) {
     dplyr::select(version, column_name, levels) |>
     tidyr::separate_rows(levels, sep = ",\\s*")
 
+
   # 2. Create label signature per version x column
   label_matrix <- label_data |>
-    dplyr::mutate(version = sub("T.*", "", version)) |>
+    #dplyr::mutate(version = sub("T.*", "", version)) |>
     dplyr::group_by(column_name, version) |>
     dplyr::summarise(
       label_signature = paste(sort(unique(levels)), collapse = "|"),
@@ -475,6 +476,7 @@ plot_LabelMatrix <- function(table) {
       changed = dplyr::if_else(is.na(changed), FALSE, changed)
     ) |>
     dplyr::ungroup()
+
 
   # 3. Plot the change matrix
   sysfonts::font_add_google("IBM Plex Sans", "IBM Plex Sans")
@@ -501,7 +503,8 @@ plot_LabelMatrix <- function(table) {
       axis.text.x = ggplot2::element_text(size = 14, angle = 0, hjust = 0.5),
       axis.text.y = ggplot2::element_text(size = 18),
       legend.position = "bottom"
-    )
+    )+
+    ggplot2::scale_x_discrete(labels = function(x) stringr::str_trunc(x, 14))
 
   return(plot)
 }
