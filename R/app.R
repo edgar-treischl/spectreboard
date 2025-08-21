@@ -1,44 +1,6 @@
-#' Preload overview table data
-#'
-#' This function loads the overview table data before the app UI is rendered,
-#' improving initial load time for users.
-#'
-#' @return A list with success indicator and either the table or error message
-#' @keywords internal
-
-preload_overview_data <- function() {
-  message("Preloading overview table data...")
-  tryCatch({
-    # Start timing
-    start_time <- Sys.time()
-
-    # Get the data
-    table_obj <- table_overview()
-
-    # Pre-render the gt table to HTML
-    # This moves the rendering work before the app starts
-    rendered_html <- gt::as_raw_html(table_obj)
-
-    message("Data loading completed in ", round(difftime(Sys.time(), start_time, units = "secs"), 2), " seconds")
-
-    list(
-      success = TRUE,
-      table = table_obj,
-      html = rendered_html
-    )
-  }, error = function(e) {
-    warning("Failed to preload overview table data: ", conditionMessage(e))
-    list(
-      success = FALSE,
-      error = paste0("Unable to generate summary table: ",
-                     "<br>Technical details: ", conditionMessage(e)),
-      html = NULL
-    )
-  })
-}
-
 #' Modern UI function for the application
 #' @export
+# app_ui.R
 app_ui <- function() {
   bslib::page_navbar(
     title = shiny::span(
@@ -54,10 +16,10 @@ app_ui <- function() {
       info = "#0dcaf0",
       font_scale = 0.9,
       "enable-transitions" = TRUE,
-      # Add IBM Plex Sans font
       base_font = bslib::font_google("IBM Plex Sans")
     ),
 
+    # ✅ Directly embedded sidebar inputs
     sidebar = bslib::sidebar(
       theme = bslib::bs_theme(version = 5),
       fillable = FALSE,
@@ -65,56 +27,27 @@ app_ui <- function() {
       bg = "#f8f9fa",
       title = "Controls",
       class = "shadow-sm rounded",
-
       bslib::card(
         class = "border-0",
-        shiny::p("Select a data set to get the intel.",
-                 class = "text-muted small"),
-        shiny::selectInput("dataset", "Select Data:",
-                           choices = c("penguins", "dataset2"),
-                           selected = "penguins"),
+        shiny::p("Select a data set to get the intel.", class = "text-muted small"),
+        shiny::selectInput("dataset", "Select Data:", choices = NULL),
+        shiny::uiOutput("version_ui"),
         shiny::hr(),
-        shiny::p("Meta data made simple with spectr.",
-                 class = "text-muted small")
+        shiny::p("Meta data made simple with spectr.", class = "text-muted small")
       )
     ),
 
-    bslib::nav_panel(
-      title = "About",
-      icon = shiny::icon("info-circle"),
-      aboutUI("about")
-    ),
-
-    bslib::nav_panel(
-      title = "Summary",
-      icon = shiny::icon("brain"),
-      summaryUI("summary")
-    ),
-
-    bslib::nav_panel(
-      title = "Validation Report",
-      icon = shiny::icon("flag"),
-      validationReportUI("validation")
-    ),
-    bslib::nav_panel(
-      title = "Variable Matrix",
-      icon = shiny::icon("table"),
-      presenceMatrixUI("presence")
-    ),
-
-    bslib::nav_panel(
-      title = "Class Matrix",
-      icon = shiny::icon("binoculars"),
-      typeMatrixUI("type")
-    ),
-
-    bslib::nav_panel(
-      title = "Labels",
-      icon = shiny::icon("tag"),
-      labelMatrixUI("label")
-    )
+    # Navigation panels
+    bslib::nav_panel("About", icon = shiny::icon("info-circle"), aboutUI("about")),
+    bslib::nav_panel("Summary", icon = shiny::icon("brain"), summaryUI("summary")),
+    bslib::nav_panel("Validation Report", icon = shiny::icon("flag"), validationReportUI("validation")),
+    bslib::nav_panel("Variable Matrix", icon = shiny::icon("table"), presenceMatrixUI("presence")),
+    bslib::nav_panel("Class Matrix", icon = shiny::icon("binoculars"), typeMatrixUI("type")),
+    bslib::nav_panel("Labels", icon = shiny::icon("tag"), labelMatrixUI("label"))
   )
 }
+
+
 
 #' Main server function for the application
 #'
@@ -123,30 +56,58 @@ app_ui <- function() {
 #' @param session Session object
 #' @param preloaded_data Preloaded overview table data
 #' @export
+# app_server.R
 app_server <- function(input, output, session, preloaded_data = NULL) {
-  # Reactive value for the selected dataset
-  selected_dataset <- shiny::reactive({
-    input$dataset
+  # Load pointers table reactively
+  pointers_data <- reactive({
+    db_path <- here::here("meta.duckdb")
+    con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
+    on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
+    DBI::dbReadTable(con, "pointers")
   })
 
-  # Create reactive for overview table data
-  overview_table_data <- shiny::reactive({
-    preloaded_data
+  # Populate dataset choices
+  observe({
+    tbls <- unique(pointers_data()$table)
+    updateSelectInput(session, "dataset", choices = tbls, selected = tbls[1])
   })
 
-  # Show notification that data is ready
-  if (!is.null(preloaded_data) && preloaded_data$success) {
-    shiny::showNotification("Data already loaded and ready to use", type = "message")
-  }
+  # Dynamic version selector
+  output$version_ui <- renderUI({
+    req(input$dataset)
 
-  # Initialize all module servers
-  aboutServer("about", overview_table_data = overview_table_data)
-  summaryServer("summary", selected_dataset)
-  validationReportServer("validation", selected_dataset)
-  presenceMatrixServer("presence", selected_dataset)
-  typeMatrixServer("type", selected_dataset)
-  labelMatrixServer("label", selected_dataset)
+    versions_df <- pointers_data() |>
+      dplyr::filter(table == input$dataset) |>
+      dplyr::mutate(
+        timestamp_str = stringr::str_extract(version, "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}"),
+        timestamp = lubridate::ymd_hms(stringr::str_replace_all(timestamp_str, "-", ":"), tz = "UTC")
+      ) |>
+      dplyr::arrange(dplyr::desc(timestamp))
+
+    versions <- versions_df$version
+    latest <- versions[1]
+
+    shiny::selectInput(
+      "version",
+      "Select Version (optional)",
+      choices = versions,
+      selected = latest
+    )
+  })
+
+  # Now connect all modules that use these inputs
+  selected_table <- reactive(input$dataset)
+  selected_version <- reactive(input$version)
+
+  aboutServer("about")
+  summaryServer("summary", dataset = selected_table, version = selected_version)
+  validationReportServer("validation", dataset = selected_table, version = selected_version)
+  presenceMatrixServer("presence", dataset = selected_table)
+  typeMatrixServer("type", dataset = selected_table)
+  labelMatrixServer("label", dataset = selected_table)
 }
+
+
 
 #' Run the Shiny application
 #'
@@ -154,8 +115,7 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
 #'
 #' @export
 run_app <- function() {
-  # Preload data before starting the app
-  preloaded_data <- preload_overview_data()
+
 
   # Add resource path for images
   shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
@@ -165,7 +125,7 @@ run_app <- function() {
 
   # Create server function with preloaded data
   server <- function(input, output, session) {
-    app_server(input, output, session, preloaded_data = preloaded_data)
+    app_server(input, output, session)
   }
 
   # Launch the app

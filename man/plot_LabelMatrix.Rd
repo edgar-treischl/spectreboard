@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot_LabelMatrix}
 \alias{plot_LabelMatrix}
-\title{Plot Label Matrix}
+\title{Plot Labels}
 \usage{
 plot_LabelMatrix(table)
 }
@@ -13,5 +13,5 @@ plot_LabelMatrix(table)
 A ggplot object
 }
 \description{
-Plot Label Matrix
+Plot Labels
 }

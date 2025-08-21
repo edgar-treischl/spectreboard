@@ -2,15 +2,13 @@
 % Please edit documentation in R/module_summary.R
 \name{summaryServer}
 \alias{summaryServer}
-\title{Server Module for Summary panel}
+\title{Summary server logic}
 \usage{
-summaryServer(id, dataset)
+summaryServer(id, dataset, version)
 }
 \arguments{
 \item{id}{ID for the module}
-
-\item{dataset}{Reactive expression that returns the dataset to be summarized}
 }
 \description{
-Server Module for Summary panel
+Summary server logic
 }

@@ -5,11 +5,22 @@
 #' @returns A gt table with pointer information
 #' @export
 #'
-table_pointer <- function(pointer_name) {
-  table_pointers <- spectr::read_pointer2(data = pointer_name)
+table_pointer <- function(pointer_name = "penguins",
+                          date = "2025-08-20T13-52-15") {
+  #table_pointers <- spectr::read_pointer2(data = pointer_name)
+  table_pointersindex <- duckdb_table(table = "pointers", name = pointer_name)
 
-  table_pointersindex <- table_pointers[[1]]
-  table_meta <- table_pointers[[2]]
+  table_pointersindex <- table_pointersindex |>
+    dplyr::filter(table == pointer_name) |>
+    dplyr::filter(version == date)
+
+
+  table_meta <- duckdb_table(table = "columns", name = pointer_name)
+
+  table_meta <- table_meta |>
+    dplyr::filter(table == pointer_name) |>
+    dplyr::filter(version == date)
+
 
   informant_data <- table_meta |>
     dplyr::select(column = column_name, label, type, levels, description)
@@ -69,14 +80,15 @@ table_pointer <- function(pointer_name) {
   return(table)
 }
 
-#pointer_table("penguins_raw")
 
 #' Table Validation Overview
+#'
+#' @param data Data File
 #'
 #' @returns A `gt` table with the validation overview.
 #' @export
 #'
-table_overview <- function() {
+table_overview <- function(data) {
 
   #glcon <- AmtSchulGit::gitlab_connect()
   #userkeys <- keyring::key_list("gitlab_api")
@@ -113,7 +125,9 @@ table_overview <- function() {
   #
   # df <- do.call(rbind, df) |> as.data.frame()
 
-  df <- duckdb_table(table = "global_data")
+  #df <- duckdb_table(table = "global_data")
+
+  df <- data
 
   df$version <- sapply(df$version, as.character)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_octopussy.R
 \name{validationReportUI}
 \alias{validationReportUI}
-\title{UI Module for Validation Report}
+\title{Validation user interface}
 \usage{
 validationReportUI(id)
 }
@@ -10,5 +10,5 @@ validationReportUI(id)
 \item{id}{ID for the module}
 }
 \description{
-UI Module for Validation Report
+Validation user interface
 }

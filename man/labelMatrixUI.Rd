@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_labelmatrix.R
 \name{labelMatrixUI}
 \alias{labelMatrixUI}
-\title{UI Module for labelMatrix}
+\title{Label matrix user interface}
 \usage{
 labelMatrixUI(id)
 }
@@ -10,5 +10,5 @@ labelMatrixUI(id)
 \item{id}{The namespace ID for the module.}
 }
 \description{
-UI Module for labelMatrix
+Label matrix user interface
 }

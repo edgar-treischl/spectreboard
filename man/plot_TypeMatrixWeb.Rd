@@ -2,9 +2,9 @@
 % Please edit documentation in R/plot.R
 \name{plot_TypeMatrixWeb}
 \alias{plot_TypeMatrixWeb}
-\title{Plot the Type Matrix}
+\title{Plot the Types}
 \usage{
-plot_TypeMatrixWeb(table, skip = 0, clip_date = TRUE)
+plot_TypeMatrixWeb(table, skip = 0, clip_date = FALSE)
 }
 \arguments{
 \item{table}{Table/Data Name}
@@ -17,5 +17,5 @@ plot_TypeMatrixWeb(table, skip = 0, clip_date = TRUE)
 A ggplot object
 }
 \description{
-Plot the Type Matrix
+Plot the Types
 }

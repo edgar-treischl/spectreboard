@@ -2,9 +2,9 @@
 % Please edit documentation in R/plot.R
 \name{plot_PresenceMatrixWeb}
 \alias{plot_PresenceMatrixWeb}
-\title{Plot the Presence Matrix}
+\title{Plot the Presence Web}
 \usage{
-plot_PresenceMatrixWeb(table, skip = 0, clip_date = TRUE)
+plot_PresenceMatrixWeb(table, skip = 0, clip_date = FALSE)
 }
 \arguments{
 \item{table}{Table/Data Name}
@@ -17,5 +17,5 @@ plot_PresenceMatrixWeb(table, skip = 0, clip_date = TRUE)
 A ggplot object
 }
 \description{
-Plot the Presence Matrix
+Plot the Presence Web
 }

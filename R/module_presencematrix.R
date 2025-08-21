@@ -1,4 +1,4 @@
-#' UI Module for Presence Matrix panel
+#' Presence user interface
 #'
 #' @param id ID for the module
 #' @export
@@ -50,7 +50,7 @@ presenceMatrixUI <- function(id) {
 }
 
 
-#' Server Module for Presence Matrix panel
+#' Presence server logic
 #'
 #' @param id ID for the module
 #' @param dataset Reactive expression that returns the dataset to be visualized
@@ -58,75 +58,58 @@ presenceMatrixUI <- function(id) {
 #
 presenceMatrixServer <- function(id, dataset) {
   shiny::moduleServer(id, function(input, output, session) {
-    # Create reactive value for tracking plot state
+
+    # Reactive value to track plot state
     plot_state <- shiny::reactiveVal(list(valid = TRUE, error = NULL))
 
-    # Reactive to safely try plotting and capture any errors
+    # Reactive expression that tries to generate the plot safely
     plot_result <- shiny::reactive({
-      # Ensure we have a dataset value
-      ds_value <- dataset()
-      if (is.null(ds_value) || ds_value == "") {
-        return(list(success = FALSE, error = "No dataset selected"))
-      }
+      ds <- shiny::req(dataset())
+      skip_value <- input$skip
 
-      # Try to create the plot, catching any errors
       tryCatch({
-        skip_value <- input$skip
-        plot_obj <- plot_PresenceMatrixWeb(ds_value, skip_value)
-        return(list(success = TRUE, plot = plot_obj))
+        plot_obj <- plot_PresenceMatrixWeb(table = ds, skip = skip_value)
+        list(success = TRUE, plot = plot_obj)
       }, error = function(e) {
-        # Return error message in a user-friendly format
-        return(list(
+        list(
           success = FALSE,
-          error = paste0("Unable to generate visualization for dataset: ", ds_value,
-                         "<br>Technical details: ", conditionMessage(e))
-        ))
+          error = paste0(
+            "Unable to generate visualization for dataset: ", ds,
+            "<br>Technical details: ", conditionMessage(e)
+          )
+        )
       })
     }) |> shiny::bindCache(dataset(), input$skip, cache = "session")
 
-    # Update our plot state whenever plot_result changes
+    # Update plot state when plot result changes
     shiny::observe({
       result <- plot_result()
-      # Just update plot state without showing notifications
       plot_state(list(valid = result$success, error = result$error))
     })
 
-    # Output that will display either the plot or an error message
+    # UI output: either plot or error message
     output$plot_or_message <- shiny::renderUI({
       state <- plot_state()
 
-      # Check if plotting was successful
       if (state$valid) {
-        # Return the plot output
         shiny::plotOutput(session$ns("presence_plot"), height = "600px")
       } else {
-        # Return an error message
         shiny::div(
           class = "d-flex flex-column justify-content-center align-items-center",
           style = "height: 600px; background-color: #f8f9fa;",
           shiny::icon("exclamation-circle", class = "text-warning fa-4x mb-3"),
           shiny::h4("Data Visualization Error", class = "text-danger"),
-          shiny::p(
-            class = "text-center text-muted",
-            shiny::HTML(state$error)
-          ),
-          shiny::p(
-            class = "text-center",
-            "Please select a different dataset or adjust settings."
-          )
+          shiny::p(class = "text-center text-muted", shiny::HTML(state$error)),
+          shiny::p(class = "text-center", "Please select a different dataset or adjust settings.")
         )
       }
     })
 
-    # Render presence matrix plot (only executed when data is valid)
+    # Plot output (only shown if valid)
     output$presence_plot <- shiny::renderPlot({
-      # This will only be called when plot_state()$valid is TRUE
-      state <- plot_state()
-      shiny::req(state$valid)
-
-      # At this point we know the plot can be generated
+      shiny::req(plot_state()$valid)
       plot_result()$plot
-    },res = 96, height = function() session$clientData$output_responsivePlot_width * 0.7) |>
-      shiny::bindCache(dataset(), input$skip, cache = "session")
+    }, res = 96, height = 600)
   })
 }
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_presencematrix.R
 \name{presenceMatrixUI}
 \alias{presenceMatrixUI}
-\title{UI Module for Presence Matrix panel}
+\title{Presence user interface}
 \usage{
 presenceMatrixUI(id)
 }
@@ -10,5 +10,5 @@ presenceMatrixUI(id)
 \item{id}{ID for the module}
 }
 \description{
-UI Module for Presence Matrix panel
+Presence user interface
 }

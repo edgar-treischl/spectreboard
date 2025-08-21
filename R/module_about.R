@@ -1,5 +1,5 @@
 
-#' UI Module for About panel
+#' About user interface
 #'
 #' This function initializes and runs the Shiny application.
 #' @param id The namespace ID for the module.
@@ -43,56 +43,37 @@ aboutUI <- function(id) {
   )
 }
 
-#' Server Module for About panel
+#' About server logic
 #'
 #' @param id The namespace ID for the module.
 #' @export
-#
-
-aboutServer <- function(id, overview_table_data = NULL) {
+#'
+aboutServer <- function(id) {
   shiny::moduleServer(id, function(input, output, session) {
-    # If overview_table_data was not provided, create it locally
-    local_overview_table_data <- if (is.null(overview_table_data)) {
-      shiny::reactive({
-        tryCatch({
-          table_obj <- table_overview()
-          return(list(success = TRUE, table = table_obj))
-        }, error = function(e) {
-          return(list(
-            success = FALSE,
-            error = paste0("Unable to generate summary table: ",
-                           "<br>Technical details: ", conditionMessage(e))
-          ))
-        })
+
+    # Load global_data once (no filtering by table)
+    # global_data <- reactive({
+    #   duckdb_table(table = "global_data", name = NULL)
+    # })
+
+    global_data <- duckdb_table(table = "global_data", name = NULL)
+
+    output$overview_table <- shiny::renderUI({
+      tryCatch({
+        table_obj <- table_overview(data = global_data)
+        return(table_obj)
+      }, error = function(e) {
+        shiny::div(
+          class = "text-danger",
+          shiny::HTML(paste0("Unable to generate summary table:<br><em>", conditionMessage(e), "</em>"))
+        )
       })
-    } else {
-      overview_table_data
-    }
-
-    # Immediately output pre-rendered HTML if available
-    observe({
-      data <- local_overview_table_data()
-
-      if (data$success && !is.null(data$html)) {
-        # Use the pre-rendered HTML
-        output$overview_table <- renderUI({
-          HTML(data$html)
-        })
-      } else {
-        # Use the regular gt_output/render_gt approach as backup
-        output$overview_table <- gt::render_gt({
-          if (data$success) {
-            data$table
-          } else {
-            gt::gt(data.frame(Error = data$error)) |>
-              gt::fmt_markdown(columns = gt::everything()) |>
-              gt::tab_options(table.font.color = "red")
-          }
-        })
-      }
     })
+
   })
 }
+
+
 
 
 # # UI Module for About panel

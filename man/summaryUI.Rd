@@ -2,13 +2,13 @@
 % Please edit documentation in R/module_summary.R
 \name{summaryUI}
 \alias{summaryUI}
-\title{UI Module for Summary panel}
+\title{Summary user interface}
 \usage{
 summaryUI(id)
 }
 \arguments{
-\item{id}{ID for the module}
+\item{id}{Namespace ID for the module}
 }
 \description{
-UI Module for Summary panel
+Summary user interface
 }

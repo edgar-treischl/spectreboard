@@ -1,4 +1,4 @@
-#' Plot the Presence Matrix
+#' Plot the Presence
 #'
 #' @param table Table/Data Name
 #' @param skip Skip the first n versions
@@ -142,7 +142,7 @@ plot_PresenceMatrix <- function(table,
 #plot_PresenceMatrix("penguins_raw")
 
 
-#' Plot the Presence Matrix
+#' Plot the Presence Web
 #'
 #' @param table Table/Data Name
 #' @param skip Skip the first n versions
@@ -154,14 +154,16 @@ plot_PresenceMatrix <- function(table,
 
 plot_PresenceMatrixWeb <- function(table,
                                 skip = 0,
-                                clip_date = TRUE) {
+                                clip_date = FALSE) {
   # Step 1: Read column-level metadata in long format
-  data <- spectr::read_all_pointers(table)$columns
+  #data <- spectr::read_all_pointers(table)$columns
+  data <- duckdb_table(table = "columns", name = table)
+  #data <- data$columns
 
   # Step 2: Ensure no duplicates
   data <- dplyr::distinct(data, version, column_name)
 
-  data |> dplyr::filter(column_name == "gender")
+  #data |> dplyr::filter(column_name == "gender")
 
   # Step 3: Create full presence grid
   all_versions <- unique(data$version)
@@ -172,7 +174,8 @@ plot_PresenceMatrixWeb <- function(table,
     column_name = all_columns
   )
 
-  meta <- spectr::read_all_pointers(table)$pointers
+  #meta <- spectr::read_all_pointers(table)$pointers
+  meta <- duckdb_table(table = "pointers", name = table)
 
   latest_version <- meta |>
     dplyr::arrange(dplyr::desc(version)) |>
@@ -302,7 +305,7 @@ plot_PresenceMatrixWeb <- function(table,
 
 
 
-#' Plot the Type Matrix
+#' Plot the Types
 #'
 #' @param table Table/Data Name
 #' @param skip Skip the first n versions
@@ -312,9 +315,10 @@ plot_PresenceMatrixWeb <- function(table,
 #' @export
 #'
 #'
-plot_TypeMatrixWeb <- function(table, skip = 0, clip_date = TRUE) {
+plot_TypeMatrixWeb <- function(table, skip = 0, clip_date = FALSE) {
   # Step 1: Read column-level metadata in long format
-  data <- spectr::read_all_pointers(table)$columns
+  #data <- spectr::read_all_pointers(table)$columns
+  data <- duckdb_table(table = "columns", name = table)
 
 
   # Step 2: Ensure no duplicates
@@ -329,7 +333,8 @@ plot_TypeMatrixWeb <- function(table, skip = 0, clip_date = TRUE) {
     column_name = all_columns
   )
 
-  meta <- spectr::read_all_pointers(table)$pointers
+  #meta <- spectr::read_all_pointers(table)$pointers
+  meta <- duckdb_table(table = "pointers", name = table)
 
   latest_version <- meta |>
     dplyr::arrange(dplyr::desc(version)) |>
@@ -435,7 +440,7 @@ plot_TypeMatrixWeb <- function(table, skip = 0, clip_date = TRUE) {
 
 #plot_TypeMatrixWeb("penguins")
 
-#' Plot Label Matrix
+#' Plot Labels
 #'
 #' @param table Table name
 #' @returns A ggplot object
@@ -445,7 +450,8 @@ plot_TypeMatrixWeb <- function(table, skip = 0, clip_date = TRUE) {
 
 plot_LabelMatrix <- function(table) {
 
-  data <- spectr::read_all_pointers(table)$columns
+  #data <- spectr::read_all_pointers(table)$columns
+  data <- duckdb_table(table = "columns", name = table)
 
 
   label_data <- data |>

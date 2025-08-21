@@ -4,7 +4,10 @@
 \alias{table_overview}
 \title{Table Validation Overview}
 \usage{
-table_overview()
+table_overview(data)
+}
+\arguments{
+\item{data}{Data File}
 }
 \value{
 A \code{gt} table with the validation overview.

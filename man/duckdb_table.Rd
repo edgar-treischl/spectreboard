@@ -4,7 +4,7 @@
 \alias{duckdb_table}
 \title{Get a DuckDB table}
 \usage{
-duckdb_table(table = c("pointers", "columns", "global_data"))
+duckdb_table(table = c("pointers", "columns", "global_data"), name = NULL)
 }
 \arguments{
 \item{table}{Table name}

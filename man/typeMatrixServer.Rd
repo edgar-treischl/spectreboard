@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_typematrix.R
 \name{typeMatrixServer}
 \alias{typeMatrixServer}
-\title{Server Module for Type Matrix panel}
+\title{Type server logic}
 \usage{
 typeMatrixServer(id, dataset)
 }
@@ -12,5 +12,5 @@ typeMatrixServer(id, dataset)
 \item{dataset}{Reactive expression that returns the selected dataset}
 }
 \description{
-Server Module for Type Matrix panel
+Type server logic
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_about.R
 \name{aboutUI}
 \alias{aboutUI}
-\title{UI Module for About panel}
+\title{About user interface}
 \usage{
 aboutUI(id)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_presencematrix.R
 \name{presenceMatrixServer}
 \alias{presenceMatrixServer}
-\title{Server Module for Presence Matrix panel}
+\title{Presence server logic}
 \usage{
 presenceMatrixServer(id, dataset)
 }
@@ -12,5 +12,5 @@ presenceMatrixServer(id, dataset)
 \item{dataset}{Reactive expression that returns the dataset to be visualized}
 }
 \description{
-Server Module for Presence Matrix panel
+Presence server logic
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_typematrix.R
 \name{typeMatrixUI}
 \alias{typeMatrixUI}
-\title{UI Module for Type Matrix panel}
+\title{Type user interface}
 \usage{
 typeMatrixUI(id)
 }
@@ -10,5 +10,5 @@ typeMatrixUI(id)
 \item{id}{ID for the module}
 }
 \description{
-UI Module for Type Matrix panel
+Type user interface
 }

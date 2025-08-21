@@ -5,7 +5,8 @@
 #' @returns A data frame containing the requested table.
 #' @export
 #'
-duckdb_table <- function(table = c("pointers", "columns", "global_data")) {
+duckdb_table <- function(table = c("pointers", "columns", "global_data"),
+                         name = NULL) {
   rlang::arg_match(table)
   db_path <- here::here("meta.duckdb")
   con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
@@ -15,6 +16,9 @@ duckdb_table <- function(table = c("pointers", "columns", "global_data")) {
   return(data)
 
 }
+
+#duckdb_table(table = "pointers", name = "penguins")
+
 
 
 

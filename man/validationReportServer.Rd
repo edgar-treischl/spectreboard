@@ -2,15 +2,17 @@
 % Please edit documentation in R/module_octopussy.R
 \name{validationReportServer}
 \alias{validationReportServer}
-\title{Server Module for Validation Report panel}
+\title{Validation report server logic}
 \usage{
-validationReportServer(id, dataset)
+validationReportServer(id, dataset, version)
 }
 \arguments{
 \item{id}{ID for the module}
 
-\item{dataset}{Reactive expression that returns the selected dataset}
+\item{dataset}{Reactive expression for the selected dataset}
+
+\item{version}{Reactive expression for the selected version}
 }
 \description{
-Server Module for Validation Report panel
+Validation report server logic
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/module_labelmatrix.R
 \name{labelMatrixServer}
 \alias{labelMatrixServer}
-\title{Server Module for Type Matrix panel}
+\title{Label matrix server module}
 \usage{
 labelMatrixServer(id, dataset)
 }
@@ -12,5 +12,5 @@ labelMatrixServer(id, dataset)
 \item{dataset}{A reactive expression that returns the selected dataset.}
 }
 \description{
-Server Module for Type Matrix panel
+Label matrix server module
 }

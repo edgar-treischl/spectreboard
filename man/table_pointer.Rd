@@ -4,7 +4,7 @@
 \alias{table_pointer}
 \title{Create a table with pointer information}
 \usage{
-table_pointer(pointer_name)
+table_pointer(pointer_name = "penguins", date = "2025-08-20T13-52-15")
 }
 \arguments{
 \item{pointer_name}{Name of the pointer/data}

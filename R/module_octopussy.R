@@ -1,4 +1,4 @@
-#' UI Module for Validation Report
+#' Validation user interface
 #'
 #' @param id ID for the module
 #' @export
@@ -40,86 +40,76 @@ validationReportUI <- function(id) {
 }
 
 
-#' Server Module for Validation Report panel
+#' Validation report server logic
 #'
 #' @param id ID for the module
-#' @param dataset Reactive expression that returns the selected dataset
+#' @param dataset Reactive expression for the selected dataset
+#' @param version Reactive expression for the selected version
 #' @export
-#
-validationReportServer <- function(id, dataset) {
+#'
+validationReportServer <- function(id, dataset, version) {
   shiny::moduleServer(id, function(input, output, session) {
-    # Create reactive value for tracking report state
+
+    # Store error/success state
     report_state <- shiny::reactiveVal(list(valid = TRUE, error = NULL))
 
-    # Reactive to safely try loading the report and capture any errors
+    # Load report content based on dataset + version
     validation_report <- shiny::reactive({
-      # Get dataset value
-      ds_value <- dataset()
-      if (is.null(ds_value) || ds_value == "") {
-        return(list(success = FALSE, error = "No dataset selected"))
+      ds <- dataset()
+      ver <- version()
+
+      if (is.null(ds) || ds == "" || is.null(ver) || ver == "") {
+        return(list(success = FALSE, error = "No dataset or version selected."))
       }
 
-      # Path to saved HTML report files in your package
-      report_path <- system.file(
-        paste0("validation/", ds_value, "_validation.html"),
-        package = "spectr"
-      )
+      tryCatch({
+        # Pull pointer row from duckdb
+        #pointer <- table_pointer(pointer_name = ds, date = ver)
 
-      # Check if report exists
-      if (file.exists(report_path)) {
-        tryCatch({
-          # Read HTML content
+        pointer <- duckdb_table(table = "pointers", name = ds)
+        pointer <- pointer |> dplyr::filter(version == ver) |>
+          dplyr::select(report_path)
+
+        # Path from pointer (assuming report_path column exists)
+        report_path <- file.path(pointer$report_path)
+
+        if (file.exists(report_path)) {
           report_content <- readLines(report_path, warn = FALSE)
-          report_html <- paste(report_content, collapse = "\n")
-          return(list(success = TRUE, content = report_html, path = report_path))
-        }, error = function(e) {
-          return(list(
-            success = FALSE,
-            error = paste0("Error loading validation report for dataset: ", ds_value,
-                           "<br>Technical details: ", conditionMessage(e))
-          ))
-        })
-      } else {
-        return(list(
-          success = FALSE,
-          error = paste0("No validation report available for dataset: ", ds_value)
-        ))
-      }
+          return(list(success = TRUE, content = paste(report_content, collapse = "\n"), path = report_path))
+        } else {
+          return(list(success = FALSE, error = paste0("Report file not found: ", report_path)))
+        }
+      }, error = function(e) {
+        return(list(success = FALSE,
+                    error = paste0("Error loading validation report: ", conditionMessage(e))))
+      })
     })
 
-    # Update report state when validation_report changes
+    # Track state
     shiny::observe({
       result <- validation_report()
       report_state(list(valid = result$success, error = result$error))
     })
 
-    # Display validation report or error message
+    # Render UI
     output$validation_report <- shiny::renderUI({
       state <- report_state()
 
       if (state$valid) {
-        # Return the report HTML content
         shiny::HTML(validation_report()$content)
       } else {
-        # Return an error message with consistent styling
         shiny::div(
           class = "d-flex flex-column justify-content-center align-items-center",
           style = "min-height: 400px; background-color: #f8f9fa;",
           shiny::icon("exclamation-circle", class = "text-warning fa-4x mb-3"),
           shiny::h4("Report Not Available", class = "text-danger"),
-          shiny::p(
-            class = "text-center text-muted",
-            shiny::HTML(state$error)
-          ),
-          shiny::p(
-            class = "text-center",
-            "Please select a different dataset or contact the administrator."
-          )
+          shiny::p(class = "text-center text-muted", shiny::HTML(state$error)),
+          shiny::p(class = "text-center", "Please select a different dataset or contact the administrator.")
         )
       }
     })
 
-    # Download handler for validation report
+    # Download report
     output$download_report <- shiny::downloadHandler(
       filename = function() {
         paste0(dataset(), "_validation_report.html")
@@ -130,29 +120,7 @@ validationReportServer <- function(id, dataset) {
         if (result$success) {
           file.copy(result$path, file)
         } else {
-          # Create a simple HTML file with our error message
-          error_html <- paste0(
-            "<!DOCTYPE html>",
-            "<html>",
-            "<head>",
-            "  <title>Report Not Available</title>",
-            "  <style>",
-            "    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }",
-            "    .error-icon { font-size: 48px; color: #f0ad4e; margin-bottom: 20px; }",
-            "    .error-title { color: #d9534f; }",
-            "    .error-message { color: #666; margin: 20px 0; }",
-            "  </style>",
-            "</head>",
-            "<body>",
-            "  <div class='error-icon'>⚠️</div>",
-            "  <h2 class='error-title'>Report Not Available</h2>",
-            "  <p class='error-message'>", result$error, "</p>",
-            "  <p>Please select a different dataset or contact the administrator.</p>",
-            "</body>",
-            "</html>"
-          )
-
-          writeLines(error_html, file)
+          writeLines(result$error, file)
         }
       }
     )

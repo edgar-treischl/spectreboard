@@ -2,13 +2,13 @@
 % Please edit documentation in R/module_about.R
 \name{aboutServer}
 \alias{aboutServer}
-\title{Server Module for About panel}
+\title{About server logic}
 \usage{
-aboutServer(id, overview_table_data = NULL)
+aboutServer(id)
 }
 \arguments{
 \item{id}{The namespace ID for the module.}
 }
 \description{
-Server Module for About panel
+About server logic
 }
