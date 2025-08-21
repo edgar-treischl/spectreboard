@@ -1,80 +1,38 @@
-#ChatGPT: with Docker cache
-
-FROM rocker/shiny:latest
-
-# System deps (optional)
-RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
-    libssl-dev
-
-# Install R packages
-RUN R -e "install.packages(c('shiny', 'fs', 'DBI', 'duckdb'))"
-
-# Create app dir
-WORKDIR /app
-
-# Copy app code
-COPY app.R .
-
-# Create cache dir (will be mounted as a volume)
-RUN mkdir -p /app/cache
-
-EXPOSE 3838
-
-CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
-
-
-
-# Mine for last try
-# Use the official R Shiny image
-#FROM rocker/shiny:latest
+# Use a base R image with Shiny pre-installed
+FROM rocker/r-ver:latest
 
 # Install system dependencies
-#RUN apt-get update && apt-get install -y \
-    #libcurl4-openssl-dev \
-    #libssl-dev \
-    #libxml2-dev
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libxt-dev \
+    pandoc \
+    pandoc-citeproc \
+    && apt-get clean
 
-# Copy the 'spectr' package tarball into the container
-#COPY ./spectreboard_0.0.0.1.tar.gz /tmp/
+# Install Shiny
+RUN install2.r --error shiny
 
-# Install the 'spectr' package from the tarball
-#RUN R -e "install.packages('devtools')"
-#RUN R -e "devtools::install_local('/tmp/spectreboard_0.0.0.1.tar.gz')"
+# Set working directory
+WORKDIR /app
 
+# Copy app files into container
+COPY . /app
 
-# Install R packages
-#RUN R -e "install.packages('pak', repos='https://cloud.r-project.org/'); \
-          #pak::pkg_install(c('shiny', 'bslib', 'dplyr', 'ggplot2', 'gt', 'tidyr', 'sysfonts', 'devtools', 'shinycssloaders', 'emoji', 'showtext'));"
+# Ensure shiny can access files
+RUN chown -R shiny:shiny /app
 
+# Switch to shiny user
+USER shiny
 
-#OLD Comments
-# Create a directory for your specific app
-# RUN mkdir -p /srv/shiny-server/spectre/
+# Install renv + restore project packages
+RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore(confirm = FALSE)"
 
-# RUN mkdir -p /srv/shiny-server/myapp/www/
-# RUN mkdir -p /srv/shiny-server/myapp/data/
+# Expose port
+EXPOSE 3838
 
-# Copy your application files into the app directory
-# COPY R/ /srv/shiny-server/spectre/
-# COPY pointers/ /srv/shiny-server/spectre/pointers/
-# COPY validation/ /srv/shiny-server/spectre/validation/
-
-
-# Set proper permissions for the shiny to run the app
-#RUN chown -R shiny:shiny /srv/shiny-server
-
-# Switch to non-root user before starting Shiny Server
-#USER shiny
-
-# Make all app files readable by the shiny user
-# RUN chmod -R 755 /srv/shiny-server/
-
-# Expose port 3838 (default for Shiny Server)
-
-#EXPOSE 3838
-
-# Run App
-# CMD ["/usr/bin/shiny-server"]
-
-#CMD ["R", "-e", "spectreboard::run_app()"]
+# Launch the Shiny app directly
+CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]

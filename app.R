@@ -1,5 +1,16 @@
-#' Modern UI function for the application
-#' @export
+source("R/duckDB.R")
+source("R/module_labelmatrix.R")
+source("R/module_summary.R")
+source("R/table.R")
+source("R/get_oddjob.R")
+source("R/module_octopussy.R")
+source("R/module_typematrix.R")
+source("R/module_about.R")
+source("R/module_presencematrix.R")
+source("R/plot.R")
+
+
+
 # app_ui.R
 app_ui <- function() {
   bslib::page_navbar(
@@ -49,13 +60,6 @@ app_ui <- function() {
 
 
 
-#' Main server function for the application
-#'
-#' @param input Input objects
-#' @param output Output objects
-#' @param session Session object
-#' @param preloaded_data Preloaded overview table data
-#' @export
 # app_server.R
 app_server <- function(input, output, session, preloaded_data = NULL) {
   # Load pointers table reactively
@@ -109,25 +113,30 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
 
 
 
-#' Run the Shiny application
-#'
-#' This function initializes and runs the Shiny application.
-#'
-#' @export
-run_app <- function() {
+#shiny::addResourcePath("spectr", "www/images")
+shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
+shiny::shinyApp(ui = app_ui(), server = app_server)
 
 
-  # Add resource path for images
-  shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
-
-  # Create UI
-  ui <- app_ui()
-
-  # Create server function with preloaded data
-  server <- function(input, output, session) {
-    app_server(input, output, session)
-  }
-
-  # Launch the app
-  shiny::shinyApp(ui = ui, server = server)
-}
+# run_app <- function() {
+#
+#
+#   # Add resource path for images
+#   shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
+#   shiny::addResourcePath("spectr", "www/images")
+#
+#
+#   # Create UI
+#   # ui <- app_ui()
+#   #
+#   # # Create server function with preloaded data
+#   # server <- function(input, output, session) {
+#   #   app_server(input, output, session)
+#   # }
+#
+#
+#
+#
+#   # Launch the app
+#   #shiny::shinyApp(ui = ui, server = server)
+# }
