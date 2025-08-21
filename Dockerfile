@@ -9,7 +9,7 @@ RUN apt-get update && \
         libxml2-dev \
         libpng-dev \
         libjpeg-dev \
-        libxt-dev \
+        libxt-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
