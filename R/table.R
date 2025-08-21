@@ -6,7 +6,8 @@
 #' @export
 #'
 table_pointer <- function(pointer_name) {
-  table_pointers <- spectr::read_pointer(data = pointer_name)
+  table_pointers <- spectr::read_pointer2(data = pointer_name)
+
   table_pointersindex <- table_pointers[[1]]
   table_meta <- table_pointers[[2]]
 
@@ -131,8 +132,8 @@ table_overview <- function() {
     dplyr::select(dplyr::all_of(mycols))
 
 
-  table_title <- paste0(emoji::emoji("100"), " **Validation Overview** ")
-  table_sub <- paste0("According to OddJob, these are the most recent datasets")
+  table_title <- paste0(emoji::emoji("100"), " **Latest Run** ")
+  table_sub <- paste0("(According to OddJob)")
 
 
 

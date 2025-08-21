@@ -1,4 +1,31 @@
-# Really
+#ChatGPT: with Docker cache
+
+FROM rocker/shiny:latest
+
+# System deps (optional)
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev
+
+# Install R packages
+RUN R -e "install.packages(c('shiny', 'fs', 'DBI', 'duckdb'))"
+
+# Create app dir
+WORKDIR /app
+
+# Copy app code
+COPY app.R .
+
+# Create cache dir (will be mounted as a volume)
+RUN mkdir -p /app/cache
+
+EXPOSE 3838
+
+CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
+
+
+
+# Mine for last try
 # Use the official R Shiny image
 FROM rocker/shiny:latest
 

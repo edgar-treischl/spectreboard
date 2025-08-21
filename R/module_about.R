@@ -15,12 +15,11 @@ aboutUI <- function(id) {
       class = "shadow-sm",
       bslib::card_header(
         class = "bg-light",
-        shiny::h2("Spectre", class = "m-0")
+        shiny::h2("SpectreApp", class = "m-0")
       ),
       bslib::card_body(
-        shiny::p("The `spectre` package is the undercover agency of your validation pipeline. It monitors tables via pointer files and launching the appropriate validation pipeline whenever changes are detected."),
-        shiny::p("The results are stored as versioned metadata pointers (in YAML format) in the oddjob GitLab repository. Validation pipelines, reports, and pointer data create a rich meta data for a complete audit trail."),
-        shiny::p("This app retrieves the data from oddjob and visualizes it. The following validation results are found:"),
+        shiny::p("The SpectreApp gathers validation results from the oddjob repository. Validation results and pointer data create a rich meta data for a complete audit trail."),
+        shiny::p("The next table gives an overview of the most recent validations and datasets:"),
         shiny::hr(),
         # Add spinner only to the output
         shinycssloaders::withSpinner(
@@ -30,12 +29,12 @@ aboutUI <- function(id) {
           type = 1,  # Choose spinner type (1-8)
           color = "#6c757d"
         ),
-        shiny::p("Furthermore, this app shows:"),
+        shiny::p("Furthermore, this app includes:"),
         shiny::tags$ul(
-          shiny::tags$li(shiny::strong("Table Summary:"), "A table summary which includes the meta data."),
+          shiny::tags$li(shiny::strong("Summary:"), "A summary of a picked data set."),
           shiny::tags$li(shiny::strong("Validation:"), "The results of the last validation run."),
-          shiny::tags$li(shiny::strong("Presence Matrix:"), "Despicts which variables are included in a given version of the data."),
-          shiny::tags$li(shiny::strong("Type Matrix:"), "Shows which types of variables a given data set includes.")
+          shiny::tags$li(shiny::strong("Presence Matrix:"), "Displays which variables are included in a given version of the data set."),
+          shiny::tags$li(shiny::strong("Type Matrix:"), "Dispays which types of variables a given data set includes.")
         ),
         shiny::hr(),
         shiny::p("Created with ", shiny::icon("heart", style = "color: red;"), ", Shiny, and", shiny::img(src = "spectr/octo.png", height = "32px", class = "me-2"))

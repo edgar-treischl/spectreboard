@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  shiny:
+    build: .
+    ports:
+      - "3838:3838"
+    volumes:
+      - shiny_cache:/app/cache
+
+volumes:
+  shiny_cache:
