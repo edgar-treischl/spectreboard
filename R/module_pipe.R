@@ -1,10 +1,10 @@
-#' Type user interface
+#' Pipe Plot UI
 #'
-#' @param id ID for the module
+#' @param id Module ID
 #' @export
-#
-typeMatrixUI <- function(id) {
+pipePlotUI <- function(id) {
   ns <- shiny::NS(id)
+
   bslib::layout_column_wrap(
     width = "100%",
     fill = FALSE,
@@ -14,24 +14,17 @@ typeMatrixUI <- function(id) {
         class = "bg-light",
         shiny::div(
           class = "d-flex justify-content-between align-items-center",
-          shiny::h4("Class Matrix", class = "m-0"),
+          shiny::h4("Pipe Validation Matrix", class = "m-0"),
           shiny::span(
             class = "badge bg-info",
-            "Did data classes change over time?"
+            "Heatmap of validation steps per column"
           )
         )
       ),
       shiny::hr(),
-      #Add spinner only to the output
-      shinycssloaders::withSpinner(
-        # Use uiOutput instead of gt_output to support both pre-rendered HTML
-        # and dynamically rendered gt tables
-        shiny::uiOutput(ns("plot_or_message")),
-        type = 1,  # Choose spinner type (1-8)
-        color = "#6c757d"
-      ),
+      shiny::uiOutput(ns("plot_or_message")),
       bslib::card_footer(
-        "The class matrix shows which classes are (no longer) included."
+        "This matrix shows which validations are applied to which columns."
       )
     )
   )
@@ -39,66 +32,63 @@ typeMatrixUI <- function(id) {
 
 
 
-#' Type server logic
+#' Pipe Plot Server
 #'
-#' @param id ID for the module
-#' @param dataset Reactive expression that returns the selected dataset
-#'
+#' @param id Module ID
+#' @param dataset A reactive expression returning the table name (character)
 #' @export
-#
-typeMatrixServer <- function(id, dataset) {
+pipePlotServer <- function(id, dataset) {
   shiny::moduleServer(id, function(input, output, session) {
 
     # Track state of plot generation
     plot_state <- shiny::reactiveVal(list(valid = TRUE, error = NULL))
 
-    # Attempt to generate the plot safely
+    # Safely attempt to generate the plot
     plot_result <- shiny::reactive({
-      ds <- shiny::req(dataset())
+      tbl <- shiny::req(dataset())
 
       tryCatch({
-        plot_obj <- plot_TypeMatrixWeb(table = ds)
+        plot_obj <- plot_Pipe(table = tbl)
         list(success = TRUE, plot = plot_obj)
       }, error = function(e) {
         list(
           success = FALSE,
           error = paste0(
-            "Unable to generate visualization for dataset: ", ds,
+            "Unable to generate pipe plot for table: ", tbl,
             "<br>Technical details: ", conditionMessage(e)
           )
         )
       })
     }) |> shiny::bindCache(dataset(), cache = "session")
 
-    # Update state whenever plot generation is attempted
+    # Update internal state
     shiny::observe({
       result <- plot_result()
       plot_state(list(valid = result$success, error = result$error))
     })
 
-    # Show either the plot or an error message
+    # Conditional UI rendering
     output$plot_or_message <- shiny::renderUI({
       state <- plot_state()
 
       if (state$valid) {
-        shiny::plotOutput(session$ns("type_plot"), height = "600px")
+        shiny::plotOutput(session$ns("pipe_plot"), height = "600px")
       } else {
         shiny::div(
           class = "d-flex flex-column justify-content-center align-items-center",
           style = "height: 600px; background-color: #f8f9fa;",
           shiny::icon("exclamation-circle", class = "text-warning fa-4x mb-3"),
-          shiny::h4("Data Visualization Error", class = "text-danger"),
+          shiny::h4("Pipe Plot Error", class = "text-danger"),
           shiny::p(class = "text-center text-muted", shiny::HTML(state$error)),
-          shiny::p(class = "text-center", "Please select a different dataset or contact the administrator.")
+          shiny::p(class = "text-center", "Please select a different table or contact the administrator.")
         )
       }
     })
 
     # Actual plot rendering
-    output$type_plot <- shiny::renderPlot({
+    output$pipe_plot <- shiny::renderPlot({
       shiny::req(plot_state()$valid)
       plot_result()$plot
     }, res = 96, height = 600)
   })
 }
-

@@ -1,20 +1,3 @@
-# Source ####
-source("R/duckDB.R")
-source("R/table.R")
-source("R/get_oddjob.R")
-source("R/plot.R")
-
-# Source module scripts
-source("R/module_about.R")
-source("R/module_overview.R")
-source("R/module_validation.R")
-source("R/module_labelmatrix.R")
-source("R/module_typematrix.R")
-source("R/module_presencematrix.R")
-source("R/module_diff.R")
-
-
-
 # App ######
 
 # app_ui.R
@@ -59,6 +42,7 @@ app_ui <- function() {
     bslib::nav_panel("Variables", icon = shiny::icon("table"), presenceMatrixUI("presence")),
     bslib::nav_panel("Classes", icon = shiny::icon("binoculars"), typeMatrixUI("type")),
     bslib::nav_panel("Labels", icon = shiny::icon("tag"), labelMatrixUI("label")),
+    bslib::nav_panel("Pipe", icon = shiny::icon("fire"), pipePlotUI("pipe")),
     bslib::nav_panel("Diff", icon = shiny::icon("git"), diffVisUI("diff"))
   )
 }
@@ -114,6 +98,7 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
   presenceMatrixServer("presence", dataset = selected_table)
   typeMatrixServer("type", dataset = selected_table)
   labelMatrixServer("label", dataset = selected_table)
+  pipePlotServer("pipe", dataset = selected_table)
   diffVisServer("diff")
 }
 

@@ -5,7 +5,7 @@
 #' @returns A data frame containing the requested table.
 #' @export
 #'
-duckdb_table <- function(table = c("pointers", "columns", "global_data"),
+duckdb_table <- function(table = c("pointers", "columns", "global_data", "pipes"),
                          name = NULL) {
   rlang::arg_match(table)
   db_path <- here::here("data", "meta.duckdb")

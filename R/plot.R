@@ -309,3 +309,59 @@ plot_LabelMatrix <- function(table) {
 
 
 
+
+#' Plot the validation pipeline for a given table
+#'
+#' @param table Table name to get data frame from DuckDB
+#'
+#' @returns A ggplot object
+#' @export
+#'
+plot_Pipe <- function(table = "penguins") {
+  # Combine all step data frames
+  steps_df <- duckdb_table(table = "pipes", name = "penguins")
+
+  # Ensure steps_df is a data frame
+  if (!is.data.frame(steps_df)) {
+    stop("The input is not a data frame.")
+  }
+
+  # Expand columns so each row is one (column, validation_type) pair
+  columns_expanded <- steps_df |>
+    dplyr::mutate(cols = stringr::str_split(columns, ",\\s*")) |>
+    tidyr::unnest(cols)
+
+  # Create wide validation matrix
+  validation_matrix <- columns_expanded |>
+    dplyr::distinct(cols, validation_type) |>
+    dplyr::mutate(count = 1) |>
+    tidyr::pivot_wider(names_from = validation_type, values_from = count)
+
+  # Convert to long format for heatmap
+  validation_long <- validation_matrix |>
+    tidyr::pivot_longer(-cols, names_to = "validation_type", values_to = "count")
+
+  # Plot heatmap
+  plot <- ggplot2::ggplot(validation_long, ggplot2::aes(x = validation_type, y = cols, fill = count)) +
+    ggplot2::geom_tile(color = "gray80") +
+    ggplot2::scale_fill_viridis_c(option = "viridis", na.value = "white") +
+    ggplot2::labs(
+      x = "Validation step",
+      y = "Column"
+    ) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      legend.position = "none",
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      panel.grid = ggplot2::element_blank()
+    )
+
+  return(plot)
+}
+
+
+
+# plot_pipe("penguins")
+
+
+

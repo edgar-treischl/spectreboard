@@ -18,14 +18,14 @@ diffVisUI <- function(id) {
           shiny::h4("Diff Visualization", class = "m-0"),
           shiny::span(
             class = "badge bg-info",
-            "Visualize file diffs"
+            "Visualize the pipe's last diff."
           )
         )
       ),
       shiny::hr(),
       shiny::uiOutput(ns("diff_or_message")),
       bslib::card_footer(
-        "Showing the diff for the latest commit affecting the selected file."
+        "Showing the diff for the latest commit affecting the selected table/pipe."
       )
     )
   )
