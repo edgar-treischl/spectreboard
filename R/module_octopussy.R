@@ -71,7 +71,7 @@ validationReportServer <- function(id, dataset, version) {
           dplyr::select(report_path)
 
         # Path from pointer (assuming report_path column exists)
-        report_path <- file.path(pointer$report_path)
+        report_path <- file.path("data", pointer$report_path)
 
         if (file.exists(report_path)) {
           report_content <- readLines(report_path, warn = FALSE)

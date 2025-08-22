@@ -37,7 +37,7 @@ aboutUI <- function(id) {
           shiny::tags$li(shiny::strong("Type Matrix:"), "Dispays which types of variables a given data set includes.")
         ),
         shiny::hr(),
-        shiny::p("Created with ", shiny::icon("heart", style = "color: red;"), ", Shiny, and", shiny::img(src = "spectr/octo.png", height = "32px", class = "me-2"))
+        shiny::p("Created with ", shiny::icon("heart", style = "color: red;"), ", shiny, and", shiny::img(src = "images/octo.png", height = "32px", class = "me-2"))
       )
     )
   )

@@ -15,7 +15,7 @@ source("R/plot.R")
 app_ui <- function() {
   bslib::page_navbar(
     title = shiny::span(
-      shiny::img(src = "spectr/logo.png", height = "60px", class = "me-2"),
+      shiny::img(src = "images/logo.png", height = "60px", class = "me-2"),
       "spectre"
     ),
     theme = bslib::bs_theme(
@@ -40,7 +40,7 @@ app_ui <- function() {
       class = "shadow-sm rounded",
       bslib::card(
         class = "border-0",
-        shiny::p("Select a data set to get the intel.", class = "text-muted small"),
+        shiny::h4("Select a data set to get the intel.", class = "text-muted small"),
         shiny::selectInput("dataset", "Select Data:", choices = NULL),
         shiny::uiOutput("version_ui"),
         shiny::hr(),
@@ -64,7 +64,7 @@ app_ui <- function() {
 app_server <- function(input, output, session, preloaded_data = NULL) {
   # Load pointers table reactively
   pointers_data <- reactive({
-    db_path <- here::here("meta.duckdb")
+    db_path <- here::here("data", "meta.duckdb")
     con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
     on.exit(DBI::dbDisconnect(con, shutdown = TRUE))
     DBI::dbReadTable(con, "pointers")
@@ -113,8 +113,8 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
 
 
 
-#shiny::addResourcePath("spectr", "www/images")
-shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
+
+#shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
 shiny::shinyApp(ui = app_ui(), server = app_server)
 
 

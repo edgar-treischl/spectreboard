@@ -8,7 +8,7 @@
 duckdb_table <- function(table = c("pointers", "columns", "global_data"),
                          name = NULL) {
   rlang::arg_match(table)
-  db_path <- here::here("meta.duckdb")
+  db_path <- here::here("data", "meta.duckdb")
   con <- DBI::dbConnect(duckdb::duckdb(), dbdir = db_path, read_only = TRUE)
 
   data <- DBI::dbReadTable(con, table)
