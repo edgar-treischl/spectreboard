@@ -13,8 +13,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Shiny
-RUN install2.r --error shiny
+
+# Install renv + restore project packages
+RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore(confirm = FALSE)"
 
 # Set working directory
 WORKDIR /app
@@ -28,11 +29,10 @@ RUN chown -R shiny:shiny /app
 # Switch to shiny user
 USER shiny
 
-# Install renv + restore project packages
-RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore(confirm = FALSE)"
 
 # Expose port
 EXPOSE 3838
 
 # Launch the Shiny app directly
 CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
+

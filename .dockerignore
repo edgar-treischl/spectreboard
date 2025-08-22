@@ -1,0 +1,10 @@
+.Rhistory
+.RData
+.Rproj.user
+renv/library
+renv/python
+.Rproj.user/
+.Rhistory
+.RData
+README.md
+README.Rmd
