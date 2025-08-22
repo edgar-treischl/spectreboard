@@ -518,56 +518,6 @@
       "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
       "Repository": "CRAN"
     },
-    "cowplot": {
-      "Package": "cowplot",
-      "Version": "1.2.0",
-      "Source": "Repository",
-      "Title": "Streamlined Plot Theme and Plot Annotations for 'ggplot2'",
-      "Authors@R": "person( given = \"Claus O.\", family = \"Wilke\", role = c(\"aut\", \"cre\"), email = \"wilke@austin.utexas.edu\", comment = c(ORCID = \"0000-0002-7470-9261\") )",
-      "Description": "Provides various features that help with creating publication-quality figures with 'ggplot2', such as a set of themes, functions to align plots and arrange them into complex compound figures, and functions that make it easy to annotate plots and or mix plots with images. The package was originally written for internal use in the Wilke lab, hence the name (Claus O. Wilke's plot package). It has also been used extensively in the book Fundamentals of Data Visualization.",
-      "URL": "https://wilkelab.org/cowplot/",
-      "BugReports": "https://github.com/wilkelab/cowplot/issues",
-      "Depends": [
-        "R (>= 3.5.0)"
-      ],
-      "Imports": [
-        "ggplot2 (>= 3.5.2)",
-        "grid",
-        "gtable",
-        "grDevices",
-        "methods",
-        "rlang",
-        "scales"
-      ],
-      "License": "GPL-2",
-      "Suggests": [
-        "Cairo",
-        "covr",
-        "dplyr",
-        "forcats",
-        "gridGraphics (>= 0.4-0)",
-        "knitr",
-        "lattice",
-        "magick",
-        "maps",
-        "PASWR",
-        "patchwork",
-        "rmarkdown",
-        "ragg",
-        "testthat (>= 1.0.0)",
-        "tidyr",
-        "vdiffr (>= 0.3.0)",
-        "VennDiagram"
-      ],
-      "VignetteBuilder": "knitr",
-      "Collate": "'add_sub.R' 'align_plots.R' 'as_grob.R' 'as_gtable.R' 'axis_canvas.R' 'cowplot.R' 'draw.R' 'get_plot_component.R' 'get_axes.R' 'get_titles.R' 'get_legend.R' 'get_panel.R' 'gtable.R' 'key_glyph.R' 'plot_grid.R' 'save.R' 'set_null_device.R' 'setup.R' 'stamp.R' 'themes.R' 'utils_ggplot2.R'",
-      "RoxygenNote": "7.3.2",
-      "Encoding": "UTF-8",
-      "NeedsCompilation": "no",
-      "Author": "Claus O. Wilke [aut, cre] (ORCID: <https://orcid.org/0000-0002-7470-9261>)",
-      "Maintainer": "Claus O. Wilke <wilke@austin.utexas.edu>",
-      "Repository": "CRAN"
-    },
     "cpp11": {
       "Package": "cpp11",
       "Version": "0.5.2",
@@ -2756,38 +2706,6 @@
       "NeedsCompilation": "no",
       "Author": "Winston Chang [aut, cre] (ORCID: <https://orcid.org/0000-0002-1576-2126>), Joe Cheng [aut], JJ Allaire [aut], Carson Sievert [aut] (ORCID: <https://orcid.org/0000-0002-4958-2844>), Barret Schloerke [aut] (ORCID: <https://orcid.org/0000-0001-9986-114X>), Yihui Xie [aut], Jeff Allen [aut], Jonathan McPherson [aut], Alan Dipert [aut], Barbara Borges [aut], Posit Software, PBC [cph, fnd], jQuery Foundation [cph] (jQuery library and jQuery UI library), jQuery contributors [ctb, cph] (jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt), jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in inst/www/shared/jqueryui/AUTHORS.txt), Mark Otto [ctb] (Bootstrap library), Jacob Thornton [ctb] (Bootstrap library), Bootstrap contributors [ctb] (Bootstrap library), Twitter, Inc [cph] (Bootstrap library), Prem Nawaz Khan [ctb] (Bootstrap accessibility plugin), Victor Tsaran [ctb] (Bootstrap accessibility plugin), Dennis Lembree [ctb] (Bootstrap accessibility plugin), Srinivasu Chakravarthula [ctb] (Bootstrap accessibility plugin), Cathy O'Connor [ctb] (Bootstrap accessibility plugin), PayPal, Inc [cph] (Bootstrap accessibility plugin), Stefan Petre [ctb, cph] (Bootstrap-datepicker library), Andrew Rowls [ctb, cph] (Bootstrap-datepicker library), Brian Reavis [ctb, cph] (selectize.js library), Salmen Bejaoui [ctb, cph] (selectize-plugin-a11y library), Denis Ineshin [ctb, cph] (ion.rangeSlider library), Sami Samhuri [ctb, cph] (Javascript strftime library), SpryMedia Limited [ctb, cph] (DataTables library), John Fraser [ctb, cph] (showdown.js library), John Gruber [ctb, cph] (showdown.js library), Ivan Sagalaev [ctb, cph] (highlight.js library), R Core Team [ctb, cph] (tar implementation from R)",
       "Maintainer": "Winston Chang <winston@posit.co>",
-      "Repository": "CRAN"
-    },
-    "shinycssloaders": {
-      "Package": "shinycssloaders",
-      "Version": "1.1.0",
-      "Source": "Repository",
-      "Title": "Add Loading Animations to a 'shiny' Output While It's Recalculating",
-      "Authors@R": "c( person(\"Dean\",\"Attali\",email=\"daattali@gmail.com\",role=c(\"aut\",\"cre\"), comment = c(\"Maintainer/developer of shinycssloaders since 2019\", ORCID=\"0000-0002-5645-3493\")), person(\"Andras\",\"Sali\",email=\"andras.sali@alphacruncher.hu\",role=c(\"aut\"),comment=\"Original creator of shinycssloaders package\"), person(\"Luke\",\"Hass\",role=c(\"ctb\",\"cph\"),comment=\"Author of included CSS loader code\") )",
-      "Description": "When a 'Shiny' output (such as a plot, table, map, etc.) is recalculating, it remains  visible but gets greyed out. Using 'shinycssloaders', you can add a loading animation (\"spinner\") to outputs instead. By wrapping a 'Shiny' output in 'withSpinner()', a spinner will automatically appear while the output is recalculating. You can also manually show and hide the spinner, or add a full-page spinner to cover the entire page. See the demo online at <https://daattali.com/shiny/shinycssloaders-demo/>.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://github.com/daattali/shinycssloaders, https://daattali.com/shiny/shinycssloaders-demo/",
-      "BugReports": "https://github.com/daattali/shinycssloaders/issues",
-      "Depends": [
-        "R (>= 3.1)"
-      ],
-      "Imports": [
-        "digest",
-        "glue",
-        "grDevices",
-        "htmltools (>= 0.3.5)",
-        "shiny"
-      ],
-      "Suggests": [
-        "knitr",
-        "shinydisconnect",
-        "shinyjs"
-      ],
-      "RoxygenNote": "7.2.3",
-      "Encoding": "UTF-8",
-      "NeedsCompilation": "no",
-      "Author": "Dean Attali [aut, cre] (Maintainer/developer of shinycssloaders since 2019, <https://orcid.org/0000-0002-5645-3493>), Andras Sali [aut] (Original creator of shinycssloaders package), Luke Hass [ctb, cph] (Author of included CSS loader code)",
-      "Maintainer": "Dean Attali <daattali@gmail.com>",
       "Repository": "CRAN"
     },
     "showtext": {

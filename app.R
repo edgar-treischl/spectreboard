@@ -11,6 +11,8 @@ source("R/module_validation.R")
 source("R/module_labelmatrix.R")
 source("R/module_typematrix.R")
 source("R/module_presencematrix.R")
+source("R/module_diff.R")
+
 
 
 # App ######
@@ -56,7 +58,8 @@ app_ui <- function() {
     bslib::nav_panel("Validation Report", icon = shiny::icon("flag"), validationReportUI("validation")),
     bslib::nav_panel("Variables", icon = shiny::icon("table"), presenceMatrixUI("presence")),
     bslib::nav_panel("Classes", icon = shiny::icon("binoculars"), typeMatrixUI("type")),
-    bslib::nav_panel("Labels", icon = shiny::icon("tag"), labelMatrixUI("label"))
+    bslib::nav_panel("Labels", icon = shiny::icon("tag"), labelMatrixUI("label")),
+    bslib::nav_panel("Diff", icon = shiny::icon("git"), diffVisUI("diff"))
   )
 }
 
@@ -111,6 +114,7 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
   presenceMatrixServer("presence", dataset = selected_table)
   typeMatrixServer("type", dataset = selected_table)
   labelMatrixServer("label", dataset = selected_table)
+  diffVisServer("diff")
 }
 
 
