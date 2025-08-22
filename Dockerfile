@@ -13,15 +13,15 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-
-# Install renv + restore project packages
-RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore(confirm = FALSE)"
-
 # Set working directory
 WORKDIR /app
 
 # Copy app files into container
 COPY . /app
+
+# Install renv + restore project packages
+RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore(confirm = FALSE)"
+
 
 # Ensure shiny can access files
 RUN chown -R shiny:shiny /app
