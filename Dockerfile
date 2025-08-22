@@ -24,6 +24,7 @@ RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org'); renv:
 
 
 # Ensure shiny can access files
+RUN useradd -m shiny
 RUN chown -R shiny:shiny /app
 
 # Switch to shiny user
