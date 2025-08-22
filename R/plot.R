@@ -11,7 +11,8 @@ plot_PresenceMatrix <- function(table,
                                 skip = 0,
                                 clip_date = TRUE) {
   # Step 1: Read column-level metadata in long format
-  data <- spectr::read_all_pointers(table)$columns
+  #data <- spectr::read_all_pointers(table)$columns
+  data <- duckdb_table(table = "columns", name = table)
 
   # Step 2: Ensure no duplicates
   data <- dplyr::distinct(data, version, column_name)
@@ -27,7 +28,8 @@ plot_PresenceMatrix <- function(table,
     column_name = all_columns
   )
 
-  meta <- spectr::read_all_pointers(table)$pointers
+  #meta <- spectr::read_all_pointers(table)$pointers
+  meta <- duckdb_table(table = "pointers", name = table)
 
   latest_version <- meta |>
     dplyr::arrange(dplyr::desc(version)) |>
