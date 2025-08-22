@@ -17,14 +17,14 @@ typeMatrixUI <- function(id) {
           shiny::h4("Class Matrix", class = "m-0"),
           shiny::span(
             class = "badge bg-info",
-            "Visualizes data classes across versions"
+            "Did data classes change over time?"
           )
         )
       ),
       shiny::hr(),
       shiny::uiOutput(ns("plot_or_message")),
       bslib::card_footer(
-        "The class matrix shows which classes are included in a given data set."
+        "The class matrix shows which classes are (no longer) included."
       )
     )
   )

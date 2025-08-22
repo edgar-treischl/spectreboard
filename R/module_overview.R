@@ -1,16 +1,26 @@
-#' Summary user interface
+#' Overview user interface
 #'
 #' @param id Namespace ID for the module
 #' @export
 #'
-summaryUI <- function(id) {
+overviewUI <- function(id) {
   ns <- shiny::NS(id)
 
   bslib::card(
     class = "shadow-sm",
-    bslib::card_header("Summary Table"),
+    bslib::card_header(
+      class = "bg-light",
+      shiny::div(
+        class = "d-flex justify-content-between align-items-center",
+        shiny::h4("Overview Table", class = "m-0"),
+        shiny::span(
+          class = "badge bg-info",
+          "An overview of the selected dataset."
+        )
+      )
+    ),
     bslib::card_body(
-      shiny::uiOutput(ns("summary_table"))  # Matches renderUI in server
+      shiny::uiOutput(ns("overview_table"))
     )
   )
 }
@@ -23,7 +33,7 @@ summaryUI <- function(id) {
 #'
 #' @export
 #
-summaryServer <- function(id, dataset, version) {
+overviewServer <- function(id, dataset, version) {
   shiny::moduleServer(id, function(input, output, session) {
     # Create reactive value for tracking table state
     table_state <- shiny::reactiveVal(list(valid = TRUE, error = NULL))
@@ -56,7 +66,7 @@ summaryServer <- function(id, dataset, version) {
     })
 
     # Render GT table or error message
-    output$summary_table <- shiny::renderUI({
+    output$overview_table <- shiny::renderUI({
       state <- table_state()
 
       if (state$valid) {
@@ -66,7 +76,7 @@ summaryServer <- function(id, dataset, version) {
           class = "d-flex flex-column justify-content-center align-items-center",
           style = "min-height: 300px; background-color: #f8f9fa;",
           shiny::icon("exclamation-circle", class = "text-warning fa-4x mb-3"),
-          shiny::h4("Summary Not Available", class = "text-danger"),
+          shiny::h4("Overview Table Not Available", class = "text-danger"),
           shiny::p(
             class = "text-center text-muted",
             shiny::HTML(state$error)

@@ -18,14 +18,14 @@ labelMatrixUI <- function(id) {
           shiny::h4("Label Matrix", class = "m-0"),
           shiny::span(
             class = "badge bg-info",
-            "Visualizes labels across versions"
+            "Which labels are included? Did they change?"
           )
         )
       ),
       shiny::hr(),
       shiny::uiOutput(ns("labelmatrix")),
       bslib::card_footer(
-        "The label matrix shows which factorial labels are included in a given data set."
+        "The label matrix shows which factorial labels are (no longer) included."
       )
     )
   )

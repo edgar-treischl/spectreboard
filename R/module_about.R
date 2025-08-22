@@ -15,26 +15,28 @@ aboutUI <- function(id) {
       class = "shadow-sm",
       bslib::card_header(
         class = "bg-light",
-        shiny::h2("SpectreApp", class = "m-0")
+        shiny::h2("About", class = "m-0")
       ),
       bslib::card_body(
-        shiny::p("The SpectreApp gathers validation results from the oddjob repository. Validation results and pointer data create a rich meta data for a complete audit trail."),
-        shiny::p("The next table gives an overview of the most recent validations and datasets:"),
+        shiny::p("SpectreApp silently infiltrates the OddJob repository, extracting validation results and decoding them into sleek visual intel. Validation results and pointer data create a rich meta data for a complete audit trail."),
+        shiny::p("The next table gives an overview of the most recent validation runs:"),
         shiny::hr(),
+        shiny::uiOutput(ns("overview_table")),
         # Add spinner only to the output
-        shinycssloaders::withSpinner(
-          # Use uiOutput instead of gt_output to support both pre-rendered HTML
-          # and dynamically rendered gt tables
-          shiny::uiOutput(ns("overview_table")),
-          type = 1,  # Choose spinner type (1-8)
-          color = "#6c757d"
-        ),
+        # shinycssloaders::withSpinner(
+        #   # Use uiOutput instead of gt_output to support both pre-rendered HTML
+        #   # and dynamically rendered gt tables
+        #   shiny::uiOutput(ns("overview_table")),
+        #   type = 1,  # Choose spinner type (1-8)
+        #   color = "#6c757d"
+        # ),
         shiny::p("Furthermore, this app includes:"),
         shiny::tags$ul(
-          shiny::tags$li(shiny::strong("Summary:"), "A summary of a picked data set."),
-          shiny::tags$li(shiny::strong("Validation:"), "The results of the last validation run."),
-          shiny::tags$li(shiny::strong("Presence Matrix:"), "Displays which variables are included in a given version of the data set."),
-          shiny::tags$li(shiny::strong("Type Matrix:"), "Dispays which types of variables a given data set includes.")
+          shiny::tags$li(shiny::strong("Overview:"), "An overview based on the pointer file."),
+          shiny::tags$li(shiny::strong("Validation:"), "The validation report created with Octopussy."),
+          shiny::tags$li(shiny::strong("Variable Matrix:"), "Displays which variables the data includes."),
+          shiny::tags$li(shiny::strong("Class Matrix:"), "Depicts which classes the data includes."),
+          shiny::tags$li(shiny::strong("Label Matrix:"), "Shows which labels the data includes.")
         ),
         shiny::hr(),
         shiny::p("Created with ", shiny::icon("heart", style = "color: red;"), ", shiny, and", shiny::img(src = "images/octo.png", height = "32px", class = "me-2"))

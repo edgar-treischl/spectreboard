@@ -1,15 +1,19 @@
+# Source ####
 source("R/duckDB.R")
-source("R/module_labelmatrix.R")
-source("R/module_summary.R")
 source("R/table.R")
 source("R/get_oddjob.R")
-source("R/module_octopussy.R")
-source("R/module_typematrix.R")
-source("R/module_about.R")
-source("R/module_presencematrix.R")
 source("R/plot.R")
 
+# Source module scripts
+source("R/module_about.R")
+source("R/module_overview.R")
+source("R/module_validation.R")
+source("R/module_labelmatrix.R")
+source("R/module_typematrix.R")
+source("R/module_presencematrix.R")
 
+
+# App ######
 
 # app_ui.R
 app_ui <- function() {
@@ -29,8 +33,6 @@ app_ui <- function() {
       "enable-transitions" = TRUE,
       base_font = bslib::font_google("IBM Plex Sans")
     ),
-
-    # ✅ Directly embedded sidebar inputs
     sidebar = bslib::sidebar(
       theme = bslib::bs_theme(version = 5),
       fillable = FALSE,
@@ -40,20 +42,20 @@ app_ui <- function() {
       class = "shadow-sm rounded",
       bslib::card(
         class = "border-0",
-        shiny::h4("Select a data set to get the intel.", class = "text-muted small"),
-        shiny::selectInput("dataset", "Select Data:", choices = NULL),
+        shiny::h4("Select the intel for:", class = "text-muted small"),
+        shiny::selectInput("dataset", "Data:", choices = NULL),
         shiny::uiOutput("version_ui"),
         shiny::hr(),
-        shiny::p("Meta data made simple with spectr.", class = "text-muted small")
+        shiny::p("Monitoring data made simple with spectre.", class = "text-muted small")
       )
     ),
 
     # Navigation panels
     bslib::nav_panel("About", icon = shiny::icon("info-circle"), aboutUI("about")),
-    bslib::nav_panel("Summary", icon = shiny::icon("brain"), summaryUI("summary")),
+    bslib::nav_panel("Overview", icon = shiny::icon("brain"), overviewUI("overview")),
     bslib::nav_panel("Validation Report", icon = shiny::icon("flag"), validationReportUI("validation")),
-    bslib::nav_panel("Variable Matrix", icon = shiny::icon("table"), presenceMatrixUI("presence")),
-    bslib::nav_panel("Class Matrix", icon = shiny::icon("binoculars"), typeMatrixUI("type")),
+    bslib::nav_panel("Variables", icon = shiny::icon("table"), presenceMatrixUI("presence")),
+    bslib::nav_panel("Classes", icon = shiny::icon("binoculars"), typeMatrixUI("type")),
     bslib::nav_panel("Labels", icon = shiny::icon("tag"), labelMatrixUI("label"))
   )
 }
@@ -93,7 +95,7 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
 
     shiny::selectInput(
       "version",
-      "Select Version (optional)",
+      "Version (optional):",
       choices = versions,
       selected = latest
     )
@@ -104,7 +106,7 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
   selected_version <- reactive(input$version)
 
   aboutServer("about")
-  summaryServer("summary", dataset = selected_table, version = selected_version)
+  overviewServer("overview", dataset = selected_table, version = selected_version)
   validationReportServer("validation", dataset = selected_table, version = selected_version)
   presenceMatrixServer("presence", dataset = selected_table)
   typeMatrixServer("type", dataset = selected_table)
@@ -114,29 +116,8 @@ app_server <- function(input, output, session, preloaded_data = NULL) {
 
 
 
-#shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
+# Shine
 shiny::shinyApp(ui = app_ui(), server = app_server)
 
 
-# run_app <- function() {
-#
-#
-#   # Add resource path for images
-#   shiny::addResourcePath("spectr", system.file("images", package = "spectr"))
-#   shiny::addResourcePath("spectr", "www/images")
-#
-#
-#   # Create UI
-#   # ui <- app_ui()
-#   #
-#   # # Create server function with preloaded data
-#   # server <- function(input, output, session) {
-#   #   app_server(input, output, session)
-#   # }
-#
-#
-#
-#
-#   # Launch the app
-#   #shiny::shinyApp(ui = ui, server = server)
-# }
+

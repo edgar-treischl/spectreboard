@@ -18,7 +18,7 @@ presenceMatrixUI <- function(id) {
           shiny::h4("Variable Matrix", class = "m-0"),
           shiny::span(
             class = "badge bg-info",
-            "Visualizes included variables of a givent table."
+            "Inspect which variables (names) are present over time."
           )
         )
       ),
@@ -37,13 +37,13 @@ presenceMatrixUI <- function(id) {
           ),
           shiny::column(
             width = 4,
-            shiny::sliderInput(ns("skip"), "Skip Rows",
+            shiny::sliderInput(ns("skip"), "Skip older versions from the plot:",
                                min = 0, max = 10, value = 0, step = 1)
           )
         )
       ),
       bslib::card_footer(
-        "The variable matrix shows which columns are included in a given data set."
+        "The variable matrix shows which columns (names) are (no longer) included in the data."
       )
     )
   )
