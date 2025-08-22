@@ -89,7 +89,7 @@ overviewServer <- function(id, dataset, version) {
       }
     })
 
-    # The actual GT table rendering (only when data is valid)
+    # The actual GT table rendering
     output$gt_summary_table <- gt::render_gt({
       state <- table_state()
       shiny::req(state$valid)

@@ -63,14 +63,12 @@ validationReportServer <- function(id, dataset, version) {
       }
 
       tryCatch({
-        # Pull pointer row from duckdb
-        #pointer <- table_pointer(pointer_name = ds, date = ver)
-
+        # Pull pointer from duckdb
         pointer <- duckdb_table(table = "pointers", name = ds)
         pointer <- pointer |> dplyr::filter(version == ver) |>
           dplyr::select(report_path)
 
-        # Path from pointer (assuming report_path column exists)
+        # Path from pointer
         report_path <- file.path("data", pointer$report_path)
 
         if (file.exists(report_path)) {
