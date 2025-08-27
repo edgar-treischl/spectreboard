@@ -1,12 +1,6 @@
-version: '3.8'
-
 services:
-  shiny:
-    build: .
+  shinyapp:
+    image: ghcr.io/edgar-treischl/spectreboard:latest
     ports:
-      - "3838:3838"
-    volumes:
-      - shiny_cache:/app/cache
-
-volumes:
-  shiny_cache:
+      - "8080:80"
+    restart: unless-stopped
