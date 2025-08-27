@@ -1,10 +1,30 @@
+# R session files
 .Rhistory
 .RData
-.Rproj.user
-renv/library
-renv/python
 .Rproj.user/
-.Rhistory
-.RData
-README.md
-README.Rmd
+.Ruserdata
+.Rprofile
+
+# renv cache (it's global, not app-specific)
+renv/cache/
+
+# IDE/project files
+*.Rproj
+*.log
+*.tmp
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Tests or local only folders
+tests/
+notebooks/

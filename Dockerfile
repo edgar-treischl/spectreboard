@@ -1,4 +1,4 @@
-# Use rocker image with R and Shiny Server preinstalled
+# Build spectrapp
 FROM rocker/shiny:4.4.0
 
 # Avoid interactive prompts during install
