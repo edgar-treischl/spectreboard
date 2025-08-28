@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng16-16 \
     libjpeg62-turbo \
     libxt6 \
+    libreadline8 \
     ca-certificates \
     nginx \
     apache2-utils \
@@ -39,6 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
  && locale-gen \
  && rm -rf /var/lib/apt/lists/*
+
 
 
 ENV LANG en_US.UTF-8
