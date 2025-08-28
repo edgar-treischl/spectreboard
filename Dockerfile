@@ -1,66 +1,29 @@
-##############################
-# Stage 1: Build
-##############################
-FROM rocker/shiny:4.4.0 AS builder
+# Build spectrapp on top of your prebuilt base image
+FROM ghcr.io/edgar-treischl/shinyserver:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Switch to root to install app-specific packages and configs
+USER root
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-      libcurl4-openssl-dev \
-      libssl-dev \
-      libxml2-dev \
-      libpng-dev \
-      libjpeg-dev \
-      libxt-dev \
-      pandoc \
-  && rm -rf /var/lib/apt/lists/*
-
+# Set working directory
 WORKDIR /app
 
-# Copy app, renv.lock, configs, start script
+# Copy app code, nginx config, htpasswd file, and startup script
 COPY . /app
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/.htpasswd /etc/nginx/.htpasswd
+COPY start.sh /start.sh
 
-# Install renv and restore packages
-RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org')" \
- && R -e "renv::restore(confirm = FALSE)" \
- && R -e "install.packages('markdown', repos = 'https://cloud.r-project.org')"
-
-##############################
-# Stage 2: Runtime (minimal)
-##############################
-FROM rocker/shiny:4.4.0
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install runtime system dependencies only
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx \
-    apache2-utils \
-    locales \
-  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  && rm -rf /var/lib/apt/lists/*
-
-# Create user and nginx directories with correct permissions
-RUN useradd -m -s /bin/bash shinyuser \
-  && mkdir -p /var/lib/nginx/body /var/log/nginx /run \
-  && chown -R shinyuser:shinyuser /var/lib/nginx /var/log/nginx /run
-
-WORKDIR /app
-
-# Copy app files and renv lock from builder
-COPY --from=builder /app /app
-
-# Copy start script and configs from builder if needed (or copy from local)
-COPY --from=builder /start.sh /start.sh
-COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /etc/nginx/.htpasswd /etc/nginx/.htpasswd
-
+# Ensure start.sh is executable and install R dependencies
 RUN chmod +x /start.sh \
+  && R -e "renv::restore(confirm = FALSE)" \
+  && R -e "install.packages('markdown', repos = 'https://cloud.r-project.org')" \
   && chown -R shinyuser:shinyuser /app
 
+# Switch back to non-root user
 USER shinyuser
 
+# Expose nginx port
 EXPOSE 80
 
+# Start both Shiny and Nginx
 CMD ["/start.sh"]
