@@ -33,9 +33,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     apache2-utils \
     locales \
+    libfontconfig1 \
+ && ln -s /bin/sed /usr/bin/sed || true \
  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
  && locale-gen \
  && rm -rf /var/lib/apt/lists/*
+
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
