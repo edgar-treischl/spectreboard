@@ -22,6 +22,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install only required runtime libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    sed \
     libcurl4 \
     libssl1.1 \
     libxml2 \
