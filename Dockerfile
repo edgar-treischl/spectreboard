@@ -6,10 +6,13 @@ FROM ghcr.io/edgar-treischl/shinyserver:latest as builder
 USER root
 WORKDIR /build
 
+# Copy app code, nginx config, htpasswd file, and startup script
 COPY . /build
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/.htpasswd /etc/nginx/.htpasswd
+COPY start.sh /start.sh
 
-RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')" \
- && R -e "renv::restore(confirm = FALSE)"
+RUN R -e "renv::restore(confirm = FALSE)"
 
 ##############################
 # Stage 2: Runtime - Minimal
@@ -45,6 +48,9 @@ WORKDIR /app
 # Copy app files
 COPY --from=builder /build /app
 
+RUN chmod +x /start.sh
+
+
 # Copy required R binaries and libraries
 COPY --from=builder /usr/local/lib/R /usr/local/lib/R
 COPY --from=builder /usr/local/bin/R /usr/local/bin/R
@@ -56,7 +62,7 @@ COPY --from=builder /usr/local/lib/R/etc /usr/local/lib/R/etc
 COPY --from=builder /usr/local/lib/R/share /usr/local/lib/R/share
 
 # Expose Shiny port
-EXPOSE 3838
+EXPOSE 80
 
-# Set default CMD (you can change this)
-CMD ["R", "-e", "shiny::runApp('/app')"]
+# Start both Shiny and Nginx
+CMD ["/start.sh"]
