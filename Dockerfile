@@ -18,6 +18,9 @@ RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org')" \
 ##############################
 FROM rocker/r-base:4.4.0
 
+# Install shiny + dependencies with renv
+RUN R -e "install.packages('shiny', repos = 'https://cloud.r-project.org')"
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install only runtime dependencies (R is already included)
