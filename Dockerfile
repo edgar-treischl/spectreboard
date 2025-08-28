@@ -34,7 +34,7 @@ RUN useradd -m -s /bin/bash shinyuser \
 WORKDIR /app
 
 # Copy only what’s needed from the build image
-COPY --from=build /build/app /app
+COPY --from=build /build /app
 COPY --from=build /build/renv /app/renv
 COPY --from=build /build/renv.lock /app/renv.lock
 
