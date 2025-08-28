@@ -1,29 +1,54 @@
-# Build spectrapp on top of your prebuilt base image
-FROM ghcr.io/edgar-treischl/shinyserver:latest
+# ------------------------------------------------------
+# Stage 1: Build dependencies and app using full image
+# ------------------------------------------------------
+FROM ghcr.io/edgar-treischl/shinyserver:latest AS build
 
-# Switch to root to install app-specific packages and configs
 USER root
+WORKDIR /build
 
-# Set working directory
+# Copy app code
+COPY . /build
+
+# Install R packages via renv
+RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org')" \
+ && R -e "renv::restore(confirm = FALSE)" \
+ && R -e "install.packages('markdown', repos = 'https://cloud.r-project.org')"
+
+# ------------------------------------------------------
+# Stage 2: Final, slim runtime image
+# ------------------------------------------------------
+FROM rocker/shiny:4.4.0 AS runtime
+
+# Add nginx and apache2-utils (if needed)
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx \
+    apache2-utils \
+ && rm -rf /var/lib/apt/lists/*
+
+# Create shinyuser and prepare dirs
+RUN useradd -m -s /bin/bash shinyuser \
+ && mkdir -p /var/lib/nginx/body /var/log/nginx /run \
+ && chown -R shinyuser:shinyuser /var/lib/nginx /var/log/nginx /run
+
 WORKDIR /app
 
-# Copy app code, nginx config, htpasswd file, and startup script
-COPY . /app
+# Copy only what’s needed from the build image
+COPY --from=build /build/app /app
+COPY --from=build /build/renv /app/renv
+COPY --from=build /build/renv.lock /app/renv.lock
+
+# Copy configs and start script
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/.htpasswd /etc/nginx/.htpasswd
 COPY start.sh /start.sh
 
-# Ensure start.sh is executable and install R dependencies
+# Make script executable and fix permissions
 RUN chmod +x /start.sh \
-  && R -e "renv::restore(confirm = FALSE)" \
-  && R -e "install.packages('markdown', repos = 'https://cloud.r-project.org')" \
-  && chown -R shinyuser:shinyuser /app
+ && chown -R shinyuser:shinyuser /app
 
-# Switch back to non-root user
 USER shinyuser
 
-# Expose nginx port
 EXPOSE 80
 
-# Start both Shiny and Nginx
 CMD ["/start.sh"]
