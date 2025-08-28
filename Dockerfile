@@ -17,7 +17,7 @@ RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org')" \
 # ------------------------------------------------------
 # Stage 2: Final, slim runtime image
 # ------------------------------------------------------
-FROM rocker/shiny:4.4.0-slim AS runtime
+FROM rocker/shiny:4.4.0 AS runtime
 
 USER root
 
