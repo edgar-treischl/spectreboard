@@ -68,8 +68,8 @@ COPY --from=builder /usr/bin/shiny-server /usr/bin/shiny-server
 COPY --from=builder /etc/shiny-server /etc/shiny-server
 
 # Copy nginx config and .htpasswd (from builder)
-COPY --from=builder /etc/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /etc/nginx/.htpasswd /etc/nginx/.htpasswd
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/.htpasswd /etc/nginx/.htpasswd
 
 # Prepare nginx dirs and set ownership
 RUN mkdir -p /var/lib/nginx/body /var/log/nginx /run \
