@@ -337,19 +337,34 @@ plot_Pipe <- function(table = "penguins") {
     dplyr::mutate(count = 1) |>
     tidyr::pivot_wider(names_from = validation_type, values_from = count)
 
-  # Convert to long format for heatmap
+  # Convert to long format
   validation_long <- validation_matrix |>
     tidyr::pivot_longer(-cols, names_to = "validation_type", values_to = "count")
 
+  # Shorten long column names for better visualization
+  validation_long <- validation_long |>
+    dplyr::mutate(
+      cols_short = ifelse(
+        stringr::str_length(cols) > 9,
+        paste0(stringr::str_sub(cols, 1, 9), "..."),
+        cols
+      )
+    )
+
+  validation_long <- validation_long |>
+    dplyr::mutate(count_plot = ifelse(is.na(count), 0, count))
+
+
   # Plot heatmap
-  plot <- ggplot2::ggplot(validation_long, ggplot2::aes(x = validation_type, y = cols, fill = count)) +
-    ggplot2::geom_tile(color = "gray80") +
-    ggplot2::scale_fill_viridis_c(option = "viridis", na.value = "white") +
+  plot <- ggplot2::ggplot(validation_long, ggplot2::aes(x = validation_type, y = cols_short, fill = count_plot)) +
+    ggplot2::geom_line(aes(group = cols_short), size = 0.5, color = "lightgray") +
+    ggplot2::geom_point(aes(size = count_plot, color = count_plot)) +
+    ggplot2::scale_fill_viridis_c(option = "viridis", na.value = "black") +
     ggplot2::labs(
-      x = "Validation step",
-      y = "Column"
+      x = "",
+      y = ""
     ) +
-    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme_minimal(base_size = 14) +
     ggplot2::theme(
       legend.position = "none",
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
@@ -361,7 +376,7 @@ plot_Pipe <- function(table = "penguins") {
 
 
 
-# plot_pipe("penguins")
+#plot_pipe("penguins")
 
 
 
